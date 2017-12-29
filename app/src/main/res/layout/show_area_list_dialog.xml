@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.lab.certoplast.widget.MyListview
+            android:id="@+id/mylistview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp">
+        </com.lab.certoplast.widget.MyListview>
+
+
+      </ScrollView>
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            style="@style/newSheetLineStyle"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/line_c"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:text="确定"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrima"
+            android:textSize="@dimen/text_size_16" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/layout_bg">
+
+    <include layout="@layout/top_bar"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <LinearLayout
+                    style="@style/newSheetLLStyle"
+                    android:layout_marginTop="@dimen/material_margin_top"
+                    android:layout_width="match_parent">
+
+                    <TextView
+                        style="@style/materialPlanTextStyle"
+                        android:text="领用单号:"/>
+
+                    <TextView
+                        android:id="@+id/scyl_no"
+                        style="@style/materialEditTextStyle"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/newSheetLineStyle"
+                    android:layout_height="wrap_content">
+
+                    <include layout="@layout/line_c"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/newSheetLLStyle"
+                    android:layout_width="match_parent">
+
+                    <TextView
+                        style="@style/materialPlanTextStyle"
+                        android:text="产品:"/>
+
+                    <TextView
+                        android:id="@+id/tv_product_no"
+                        style="@style/materialEditTextStyle"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/newSheetLineStyle"
+                    android:layout_height="wrap_content">
+
+                    <include layout="@layout/line_c"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/newSheetLLStyle"
+                    android:layout_width="match_parent">
+
+                    <TextView
+                        style="@style/materialPlanTextStyle"
+                        android:text="申请数:"/>
+
+                    <TextView
+                        android:id="@+id/tv_apply_no"
+                        style="@style/materialEditTextStyle"
+                        />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/newSheetLineStyle"
+                    android:layout_height="wrap_content">
+
+                    <include layout="@layout/line_c"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_product_id"
+                    style="@style/newSheetLLStyle"
+                    android:layout_width="match_parent">
+
+                    <TextView
+                        style="@style/materialPlanTextStyle"
+                        android:text="产品批号:"/>
+
+                    <TextView
+                        android:id="@+id/tv_product_id"
+                        style="@style/materialEditTextStyle"
+                        />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ll1"
+                    style="@style/newSheetLineStyle"
+                    android:layout_height="wrap_content">
+
+                    <include layout="@layout/line_c"/>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl1"
+                    style="@style/newSheetLLStyle">
+
+                    <TextView
+                        style="@style/materialPlanTitleTextStyle"
+                        android:layout_centerVertical="true"
+                        android:text="待出库原料批号:"/>
+
+                    <TextView
+                        android:id="@+id/tv_wait_source"
+                        style="@style/materialEditTextStyle"
+                        android:layout_width="150dp"
+                        android:hint="待出库原料批号"
+                        android:layout_alignParentRight="true"
+
+                        />
+                </RelativeLayout>
+
+
+
+                <LinearLayout
+                    android:id="@+id/ll2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp"
+                    android:paddingLeft="@dimen/padding_left"
+                    android:paddingRight="@dimen/padding_right">
+
+                    <Button
+                        android:id="@+id/btn_done"
+                        android:layout_width="0dp"
+                        android:layout_height="41dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rectangle_construction_report_unagree"
+                        android:gravity="center"
+                        android:text="完成"
+                        android:textColor="@color/colorPrima"
+                        android:textSize="17sp"/>
+
+                    <Button
+                        android:id="@+id/btn_confirm"
+                        android:layout_width="150dp"
+                        android:layout_height="41dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/rectangle_construction_report_agree"
+                        android:gravity="center"
+                        android:text="提交"
+                        android:textColor="@android:color/white"
+                        android:textSize="17sp"/>
+
+
+
+
+                </LinearLayout>
+
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/rv_remain"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginTop="20dp"-->
+                    <!--android:cacheColorHint="@null"-->
+                    <!--android:scrollbars="none"/>-->
+                <!---->
+          <LinearLayout
+              android:id="@+id/layout2"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:visibility="gone"
+              android:orientation="vertical">
+
+              <TextView
+                  android:id="@+id/tv_has_scan"
+                  android:layout_marginTop="15dp"
+                  android:gravity="center_horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="已经扫描总数为"/>
+
+              <LinearLayout
+                  android:background="@android:color/white"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+                  <LinearLayout
+                      android:layout_width="0dp"
+                      android:layout_weight="4.0"
+                      android:layout_height="match_parent"
+                      android:paddingLeft="@dimen/padding_left"
+                      android:orientation="vertical">
+
+                      <TextView
+                          android:id="@+id/tv_productid_num"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="10dp"
+                          android:text="批号"/>
+
+                      <TextView
+                          android:id="@+id/tv_amount"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:text="数量"/>
+
+                      <TextView
+                          android:id="@+id/tv_origin_set"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:layout_marginBottom="10dp"
+                          android:text="原货位"/>
+
+                  </LinearLayout>
+
+                  <Button
+                      android:id="@+id/btn_delete"
+                      android:layout_width="0dp"
+                      android:layout_weight="1.0"
+                      android:layout_height="match_parent"
+                      android:background="@android:color/holo_red_light"
+                      android:textColor="@android:color/white"
+                      android:text="删除"/>
+
+
+              </LinearLayout>
+
+          </LinearLayout>
+
+
+            </LinearLayout>
+
+            <include
+                layout="@layout/searching"
+                android:id="@+id/searching"
+                android:visibility="gone"/>
+            <include
+                layout="@layout/show_empty"
+                android:id="@+id/show_empty"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExportableFileTemplateSettings">
+    <default_templates>
+      <template name="Activity.java" reformat="true" live-template-enabled="true" />
+      <template name="AutoView.java" reformat="true" live-template-enabled="true" />
+      <template name="Component.java" reformat="true" live-template-enabled="true" />
+      <template name="Contract.java" reformat="true" live-template-enabled="true" />
+      <template name="Fragment.java" reformat="true" live-template-enabled="true" />
+      <template name="Model.java" reformat="true" live-template-enabled="true" />
+      <template name="Module.java" reformat="true" live-template-enabled="true" />
+      <template name="Presenter.java" reformat="true" live-template-enabled="true" />
+      <template name="Singleton.java" reformat="true" live-template-enabled="true" enabled="true" />
+    </default_templates>
+  </component>
+</project>

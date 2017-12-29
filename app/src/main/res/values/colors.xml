@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+
+
+    <!--登录 -->
+    <color name="login_bg">#FC6621</color>
+
+    <!-- 布局背景-->
+    <color name="layout_bg">#F2F2F2</color>
+    <color name="a_c">#999999</color>
+    <color name="b_c">#B9B9B9</color>
+
+    <!-- 字体-->
+    <color name="list_name_color">#717284</color>
+    <color name="text_normal_color">#ABAFBB</color>
+
+
+    <!-- 文字主色调-->
+    <color name="text_c1">#131417</color>
+    <color name="text_c2">#abafbb</color>
+    <color name="text_c3">#abafbb</color>
+    <color name="text_c4">#303953</color>
+
+
+
+    <!-- 分割线-->
+    <color name="cdline">#dadada</color>
+
+    <color name="red">#ffde000a</color>
+
+
+
+    <color name="colorPrima">@color/button_color</color>
+    <color name="transparent">@android:color/transparent</color>
+
+    <color name="button_color">#434454</color>
+</resources>

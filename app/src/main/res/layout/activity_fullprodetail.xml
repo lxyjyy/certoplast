@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/layout_bg">
+
+    <include layout="@layout/top_bar"/>
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/left"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_product_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:text="生产计划号"/>
+
+            <TextView
+                android:id="@+id/tv_purchase_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="20dp"
+                android:text="入库单号"/>
+
+
+
+            <TextView
+                android:id="@+id/tv_product_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="20dp"
+                android:text="产品编号"/>
+
+            <TextView
+            android:id="@+id/tv_serial_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp"
+            android:text="产品批次号"/>
+
+
+            <TextView
+                android:id="@+id/tv_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="20dp"
+                android:text="入库数量"/>
+
+
+            <TextView
+                android:id="@+id/leave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:gravity="center_horizontal"
+                />
+
+        </LinearLayout>
+
+
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="入库货位"
+            android:text="106919835-90"
+            android:textColor="@color/a_c"
+            android:singleLine="true"
+
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="40dp"
+            android:textColorHint="@color/a_c"
+            android:background="@null"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_below="@+id/et_search"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@color/b_c"/>
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="200dp"
+            android:layout_height="@dimen/login_btn_width"
+            android:background="@android:color/white"
+            android:textColor="@color/login_bg"
+            android:layout_below="@+id/et_search"
+            android:layout_marginTop="@dimen/margin_top"
+            android:layout_gravity="center_horizontal"
+            android:text="提交"/>
+
+
+
+    </LinearLayout>
+
+
+
+
+    <include
+        layout="@layout/searching"
+        android:id="@+id/searching"
+        android:visibility="gone"/>
+    <include
+        layout="@layout/show_empty"
+        android:id="@+id/show_empty"
+        android:visibility="gone"/>
+</LinearLayout>

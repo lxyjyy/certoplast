@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/layout_bg">
+
+<include layout="@layout/top_bar"/>
+
+<android.support.v4.widget.NestedScrollView
+    android:id="@+id/sv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/layout1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                style="@style/newSheetLLStyle"
+                android:layout_marginTop="@dimen/material_margin_top"
+                android:layout_width="match_parent">
+
+                <TextView
+                    style="@style/materialPlanTextStyle"
+                    android:text="发货单号:"/>
+
+                <TextView
+                    android:id="@+id/shipping_no"
+                    style="@style/materialEditTextStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/newSheetLineStyle"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/line_c"/>
+            </LinearLayout>
+            <LinearLayout
+                android:visibility="gone"
+                style="@style/newSheetLLStyle">
+
+                <TextView
+                    style="@style/materialPlanTextStyle"
+                    android:text="客户名:"/>
+
+                <TextView
+                    android:id="@+id/tv_customer"
+                    style="@style/materialEditTextStyle"
+                    />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:visibility="gone"
+                style="@style/newSheetLineStyle"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/line_c"/>
+            </LinearLayout>
+            <RelativeLayout
+                style="@style/newSheetLLStyle">
+
+                <TextView
+                    style="@style/materialPlanTitleTextStyle"
+                    android:layout_centerVertical="true"
+                    android:text="客户编号:"/>
+
+                <EditText
+                    android:id="@+id/tv_customer_num"
+                    style="@style/materialEditTextStyle"
+                    android:layout_width="150dp"
+                    android:hint="请输入客户编号"
+                    android:layout_alignParentRight="true"
+                    />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                style="@style/newSheetLineStyle"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/line_c"/>
+            </LinearLayout>
+
+
+            <RelativeLayout
+                style="@style/newSheetLLStyle">
+
+                <TextView
+                    style="@style/materialPlanTitleTextStyle"
+                    android:layout_centerVertical="true"
+                    android:text="产品编号:"/>
+
+                <EditText
+                    android:id="@+id/tv_product_num"
+                    style="@style/materialEditTextStyle"
+                    android:layout_width="150dp"
+                    android:hint="请输入产品编号"
+                    android:layout_alignParentRight="true"
+                    />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                style="@style/newSheetLineStyle"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/line_c"/>
+            </LinearLayout>
+
+
+            <RelativeLayout
+                style="@style/newSheetLLStyle">
+
+                <TextView
+                    style="@style/materialPlanTitleTextStyle"
+                    android:layout_centerVertical="true"
+                    android:text="产品批号:"/>
+
+                <EditText
+                    android:id="@+id/tv_product_serial"
+                    style="@style/materialEditTextStyle"
+                    android:layout_width="150dp"
+                    android:hint="请输入产品批号"
+                    android:layout_alignParentRight="true"
+
+                    />
+            </RelativeLayout>
+
+            <LinearLayout
+                style="@style/newSheetLineStyle"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/line_c"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                style="@style/newSheetLLStyle">
+
+                <TextView
+                    style="@style/materialPlanTitleTextStyle"
+                    android:layout_centerVertical="true"
+                    android:text="货位编号:"/>
+
+                <EditText
+                    android:id="@+id/tv_goods_num"
+                    style="@style/materialEditTextStyle"
+                    android:layout_width="150dp"
+                    android:hint="请输入货位编号"
+                    android:layout_alignParentRight="true"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/newSheetLineStyle"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/line_c"/>
+            </LinearLayout>
+
+
+
+            <RelativeLayout
+                style="@style/newSheetLLStyle">
+
+                <TextView
+                    style="@style/materialPlanTitleTextStyle"
+                    android:layout_centerVertical="true"
+                    android:text="该货位出库数量:"/>
+
+                <EditText
+                    android:id="@+id/tv_num"
+                    style="@style/materialEditTextStyle"
+                    android:layout_width="150dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:numeric="integer"
+                    android:hint="请输入出库数量"
+                    android:layout_toLeftOf="@+id/tv_box"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_box"
+                    style="@style/materialRightImgStyle"
+                    android:text="箱"
+                    android:textColor="@color/text_c1"
+                    android:textSize="15sp"/>
+            </RelativeLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="@dimen/padding_left"
+                android:paddingRight="@dimen/padding_right">
+
+                <Button
+                    android:id="@+id/btn_done"
+                    android:layout_width="0dp"
+                    android:layout_height="41dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rectangle_construction_report_unagree"
+                    android:gravity="center"
+                    android:text="完成发货单"
+                    android:textColor="@color/colorPrima"
+                    android:textSize="17sp"/>
+
+                <Button
+                    android:id="@+id/btn_confirm"
+                    android:layout_width="150dp"
+                    android:layout_height="41dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/rectangle_construction_report_agree"
+                    android:gravity="center"
+                    android:text="提交"
+                    android:textColor="@android:color/white"
+                    android:textSize="17sp"/>
+
+
+
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_remain"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:cacheColorHint="@null"
+                android:scrollbars="none"/>
+
+        </LinearLayout>
+
+    <include
+        layout="@layout/searching"
+        android:id="@+id/searching"
+        android:visibility="gone"/>
+    <include
+        layout="@layout/show_empty"
+        android:id="@+id/show_empty"
+        android:visibility="gone"/>
+
+
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
+</LinearLayout>

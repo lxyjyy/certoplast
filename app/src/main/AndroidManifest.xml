@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lab.certoplast">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".app.AppContext"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".ui.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- 登录界面-->
+        <activity android:name=".ui.LoginActivity"/>
+
+        <!-- 主界面-->
+        <activity android:name=".ui.MainActivity"/>
+
+        <!-- 盘点查询界面-->
+        <activity android:name=".ui.InventorySearchActivity"/>
+        <!-- 盘点查询列表 -->
+        <activity android:name=".ui.InventoryListActivity"/>
+
+        <!-- 采购收货界面 -->
+        <activity android:name=".ui.MigoSearchActivity"/>
+
+        <!-- 生产领用列表 -->
+        <activity android:name=".ui.ProductionOfRecipientsActivity"/>
+        <activity
+            android:name=".ui.ProductionOfRecipientsDetailActivity"/>
+        <!-- 生产领用采购收货结果 -->
+        <activity android:name=".ui.MigoSearchListActivity"/>
+        <activity android:name=".ui.CgshDetail1Activity"/>
+        <activity android:name=".ui.WareHousingActivity"/>
+        <activity android:name=".ui.FullProActivity"/>
+        <activity android:name=".ui.ShippingActivity"/>
+        <activity android:name=".ui.ShippingDetailActivity"/>
+        <activity android:name=".ui.FullProDetailActivity"/>
+        <activity android:name=".ui.FullProDetail1Activity"/>
+        <activity android:name=".ui.HalfProActivity"/>
+        <activity android:name=".ui.HalfProDetailActivity"/>
+
+    </application>
+
+</manifest>
