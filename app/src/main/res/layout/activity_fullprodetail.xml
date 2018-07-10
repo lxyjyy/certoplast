@@ -7,11 +7,37 @@
 
     <include layout="@layout/top_bar"/>
 
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_weight="1.0"
+     android:layout_height="match_parent">
+
+<android.support.v4.widget.NestedScrollView
+    android:id="@+id/sv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+
+
     <LinearLayout
         android:id="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="25sp"
+            android:textColor="@color/login_bg"
+            android:text="成品入库系统"/>
         <LinearLayout
             android:id="@+id/left"
             android:layout_width="match_parent"
@@ -86,20 +112,45 @@
         </LinearLayout>
 
 
+        <Button
+            android:id="@+id/btn_done"
+            android:layout_width="200dp"
+            android:layout_height="@dimen/login_btn_width"
+            android:background="@android:color/white"
+            android:textColor="@color/login_bg"
+            android:layout_below="@+id/et_search"
+            android:layout_marginTop="@dimen/margin_top"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:text="完成此成品入库单作业"/>
+
+<LinearLayout
+    android:id="@+id/layout3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20sp"
+            android:textColor="@color/login_bg"
+            android:text="本次入库货位:"/>
 
         <EditText
             android:id="@+id/et_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="入库货位"
-            android:text="106919835-90"
             android:textColor="@color/a_c"
             android:singleLine="true"
 
             android:layout_centerInParent="true"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="10dp"
             android:textColorHint="@color/a_c"
             android:background="@null"/>
 
@@ -122,13 +173,11 @@
             android:layout_marginTop="@dimen/margin_top"
             android:layout_gravity="center_horizontal"
             android:text="提交"/>
+</LinearLayout>
 
 
 
     </LinearLayout>
-
-
-
 
     <include
         layout="@layout/searching"
@@ -138,4 +187,8 @@
         layout="@layout/show_empty"
         android:id="@+id/show_empty"
         android:visibility="gone"/>
+</LinearLayout>
+</android.support.v4.widget.NestedScrollView>
+ </LinearLayout>
+    <include layout="@layout/bottom_bar"/>
 </LinearLayout>

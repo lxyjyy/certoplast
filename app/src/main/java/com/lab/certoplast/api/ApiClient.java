@@ -17,7 +17,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONException;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -39,8 +38,8 @@ public class ApiClient {
 		public static final String DESC = "descend";
 		public static final String ASC = "ascend";
 
-		private final static int TIMEOUT_CONNECTION = 8000;// timeout_connection
-		private final static int TIMEOUT_SOCKET = 8000;// timeout_socket
+		private final static int TIMEOUT_CONNECTION = 28000;// timeout_connection
+		private final static int TIMEOUT_SOCKET = 28000;// timeout_socket
 		private final static int RETRY_TIME = 0;// retry_time
 		private static final String TAG = "ApiClient";
 
@@ -91,6 +90,7 @@ public class ApiClient {
 		}
 
 		private static PostMethod getHttpPost(String url, String cookie) {
+			Log.e("TAG", "post.url:" + url);
 			PostMethod httpPost = new PostMethod(url);
 			// 设置 请求超时时间
 			httpPost.getParams().setSoTimeout(TIMEOUT_SOCKET);
@@ -133,8 +133,14 @@ public class ApiClient {
 				throws AppException {
 
 			String cookie = getCookie(appContext);
-			String url = _MakeURL(vo.requestUrl, vo.requestDataMap);
-			System.out.println("_MakeURL(url)====" + url);
+
+			String HOST = appContext.ipPort();
+			String HTTP = "http://";
+			String URL_SPLITTER = "/";
+			String URL_API_HOST = HTTP + HOST;
+
+			String url = _MakeURL(URL_API_HOST.concat("/" + vo.methodName), vo.requestDataMap);
+			Log.e("TAG","_MakeURL(url)====" + url);
 			HttpClient httpClient = null;
 			GetMethod httpGet = null;
 
@@ -148,7 +154,7 @@ public class ApiClient {
 				Log.e(TAG, "statusCode:" + statusCode);
 				if (statusCode != HttpStatus.SC_OK) {
 					throw new AppException(
-							AppException.TaskError.timeout.toString());
+							AppException.TaskError.REQUEST_ERROR.toString());
 				}
 
 				String responseBody = httpGet.getResponseBodyAsString();
@@ -156,28 +162,28 @@ public class ApiClient {
 				Log.e(TAG, "responseBody:" + responseBody);
 
 				try {
-					// 检测是否登陆过期
+
 					obj = vo.jsonParser.parse(responseBody);
 
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new AppException(
-							AppException.TaskError.timeout.toString());
+							AppException.TaskError.PARSE_EXCEPTION.toString());
 				}
 
 				return obj;
 			} catch (SocketTimeoutException e) {
 				e.printStackTrace();
-				throw new AppException(AppException.TaskError.timeout.toString());
+				throw new AppException(AppException.TaskError.CONNECT_EXCEPTION.toString());
 			} catch (ConnectTimeoutException e) {
 				e.printStackTrace();
-				throw new AppException(AppException.TaskError.timeout.toString());
+				throw new AppException(AppException.TaskError.TIMEOUT.toString());
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
-				throw new AppException(AppException.TaskError.timeout.toString());
+				throw new AppException(AppException.TaskError.UNKNOWNHOST_EXCEPTION.toString());
 			} catch (IOException e) {
 				e.printStackTrace();
-				throw new AppException(AppException.TaskError.timeout.toString());
+				throw new AppException(AppException.TaskError.IOEXCEPTION.toString());
 			} finally {
 				// 释放连接
 				httpGet.releaseConnection();
@@ -212,7 +218,7 @@ public class ApiClient {
 				for (String name : params.keySet()) {
 					parts[i++] = new NameValuePair(name, String.valueOf(params
 							.get(name)));
-					System.out.println("post_key==> " + name + "    value==>"
+					Log.e("TAG","post_key==> " + name + "    value==>"
 							+ String.valueOf(params.get(name)));
 				}
 
@@ -226,18 +232,18 @@ public class ApiClient {
 				String HOST = appContext.ipPort();
 				String HTTP = "http://";
 				String URL_SPLITTER = "/";
-				String URL_API_HOST = HTTP + HOST + URL_SPLITTER;
-				String WSDI_URI = URL_API_HOST + "REDERP_WEBSERVICE.asmx";
+				String URL_API_HOST = HTTP + HOST;
+//				String WSDI_URI = URL_API_HOST + "REDERP_WEBSERVICE.asmx";
 
-				httpPost = getHttpPost(WSDI_URI.concat("/" + vo.methodName), cookie);
+				httpPost = getHttpPost(URL_API_HOST.concat("/" + vo.methodName), cookie);
 
 				httpPost.setRequestBody(parts);
 				int statusCode = httpClient.executeMethod(httpPost);
-				System.out.println("返回结果:=============" + statusCode);
+				Log.e("TAG","返回结果:=============" + statusCode);
 				if (statusCode != HttpStatus.SC_OK) {
 					//请求失败异常
 					throw new AppException(
-							AppException.TaskError.timeout.toString());
+							AppException.TaskError.REQUEST_ERROR.toString());
 				} else if (statusCode == HttpStatus.SC_OK) {
 					org.apache.commons.httpclient.Cookie[] cookies = httpClient
 							.getState().getCookies();
@@ -256,11 +262,11 @@ public class ApiClient {
 				Log.e(TAG,"responseBody:" + responseBody);
 				try{
 					obj = vo.jsonParser.parse(responseBody);
-				}catch (XmlPullParserException e){
+				}catch (Exception e){
 					//解析服务器数据异常
 					e.printStackTrace();
 					throw new AppException(
-							AppException.TaskError.timeout.toString());
+							AppException.TaskError.PARSE_EXCEPTION.toString());
 				}
 
 				return obj;
@@ -268,19 +274,19 @@ public class ApiClient {
 			} catch (SocketTimeoutException e) {
 				//连接服务器异常
 				e.printStackTrace();
-				throw new AppException(AppException.TaskError.timeout.toString());
+				throw new AppException(AppException.TaskError.CONNECT_EXCEPTION.toString());
 			} catch (ConnectTimeoutException e) {
 				//连接服务器超时
 				e.printStackTrace();
-				throw new AppException(AppException.TaskError.timeout.toString());
+				throw new AppException(AppException.TaskError.TIMEOUT.toString());
 			} catch (UnknownHostException e) {
 				//未知的主机异常
 				e.printStackTrace();
-				throw new AppException(AppException.TaskError.timeout.toString());
+				throw new AppException(AppException.TaskError.UNKNOWNHOST_EXCEPTION.toString());
 			} catch (IOException e) {
 				//读写数据异常
 				e.printStackTrace();
-				throw new AppException(AppException.TaskError.timeout.toString());
+				throw new AppException(AppException.TaskError.IOEXCEPTION.toString());
 			} finally {
 				// 释放连接
 				httpPost.releaseConnection();

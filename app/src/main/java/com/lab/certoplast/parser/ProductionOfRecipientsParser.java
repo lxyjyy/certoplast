@@ -1,15 +1,12 @@
 package com.lab.certoplast.parser;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.lab.certoplast.bean.ProductionOfRecipients;
-import com.lab.certoplast.utils.StringUtils;
+import com.lab.certoplast.bean.Response;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,21 +14,18 @@ import java.util.List;
  * 生产领用转换对象
  */
 
-public class ProductionOfRecipientsParser extends BaseParser<List<ProductionOfRecipients>> {
+public class ProductionOfRecipientsParser extends BaseParser<Response> {
 
     @Override
-    public List<ProductionOfRecipients> parse(String paramString) throws IOException, XmlPullParserException {
+    public Response parse(String paramString) throws JsonParseException {
 
         if (paramString != null)
         {
-            String result = StringUtils.xmlParser(paramString);
-            Type founderListType = new TypeToken<ArrayList<ProductionOfRecipients>>(){}.getType();
+            Type founderListType = new TypeToken<Response<List<ProductionOfRecipients>>>(){}.getType();
 
-            List<ProductionOfRecipients> list = new Gson().fromJson(result, founderListType);
+            Response response = new Gson().fromJson(paramString, founderListType);
 
-            if (list.size() > 0){
-                return list;
-            }
+            return response;
         }
 
         return null;

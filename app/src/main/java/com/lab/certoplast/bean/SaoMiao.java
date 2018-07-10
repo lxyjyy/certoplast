@@ -1,20 +1,26 @@
 package com.lab.certoplast.bean;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by lxyjyy on 17/12/10.
  */
 
 public class SaoMiao extends Base {
 
-    @SerializedName("saomiao.Product_ID")
     private String product_id;
     private String outshulinag;
 
     private String baozhuang_bili;
     private String saomiao_ok;
 
+    private String state;
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 
     public String getOutshulinag() {
         return outshulinag;

@@ -14,6 +14,7 @@ import com.lab.certoplast.bean.DataCallback;
 import com.lab.certoplast.bean.ErrorMessage;
 import com.lab.certoplast.bean.IP;
 import com.lab.certoplast.bean.RequestVo;
+import com.lab.certoplast.bean.Response;
 import com.lab.certoplast.bean.User;
 import com.lab.certoplast.parser.LoginParser;
 import com.lab.certoplast.utils.UiCommon;
@@ -67,6 +68,16 @@ public class LoginActivity extends BaseActivity {
         fourthIP.addTextChangedListener(watcher4);
         et_port.addTextChangedListener(port);
 
+        et_login.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String username = et_login.getText().toString().trim();
+                if (!hasFocus && !TextUtils.isEmpty(username)){
+                    //提交
+                    login();
+                }
+            }
+        });
 
         IP ip = appContext.getIPPort();
 
@@ -94,71 +105,84 @@ public class LoginActivity extends BaseActivity {
         btn_login.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-
-                if (TextUtils.isEmpty(first) || TextUtils.isEmpty(second)
-                        || TextUtils.isEmpty(third) || TextUtils.isEmpty(third)){
-                    UiCommon.INSTANCE.showTip("请输入IP地址");
-                    return;
-                }
-
-                if (TextUtils.isEmpty(requestPort)){
-                    UiCommon.INSTANCE.showTip("请输入端口号");
-                    return;
-                }
-
-                save();
-
-                final String userId = et_login.getText().toString().trim();
-
-                HashMap<String,String> map = new HashMap<String, String>();
-
-                map.put("UserID", userId);
-
-                RequestVo vo = new RequestVo();
-
-                vo.methodName = "GetHQ_User";
-                vo.requestDataMap = map;
-                vo.jsonParser = new LoginParser();
-                vo.isShowDialog = true;
-                vo.Message = "正在登录...";
-
-
-                doPost(vo, new DataCallback() {
-                    @Override
-                    public void processData(Object paramObject, boolean paramBoolean) {
-                        closeProgress();
-                        if (paramObject != null){
-
-                            save();
-
-                            User user = (User) paramObject;
-                            user.setUser_Name(userId);
-                            appContext.saveLoginInfo(user);
-                            redictToActivity(LoginActivity.this, MainActivity.class, null);
-                            finish();
-                        }else {
-                            UiCommon.INSTANCE.showTip("用户不存在");
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(AppException e) {
-                        closeProgress();
-                    }
-
-                    @Override
-                    public void onError(ErrorMessage error) {
-                        closeProgress();
-                    }
-                });
+                login();
 
             }
         });
 
     }
 
+
+    private void login(){
+        if (TextUtils.isEmpty(first) || TextUtils.isEmpty(second)
+                || TextUtils.isEmpty(third) || TextUtils.isEmpty(third)){
+            UiCommon.INSTANCE.showTip("请输入IP地址");
+            return;
+        }
+
+        if (TextUtils.isEmpty(requestPort)){
+            UiCommon.INSTANCE.showTip("请输入端口号");
+            return;
+        }
+
+
+        save();
+
+        final String userId = et_login.getText().toString().trim();
+
+        HashMap<String,String> map = new HashMap<String, String>();
+
+        map.put("username", userId);
+
+        RequestVo vo = new RequestVo();
+
+        vo.methodName = "login.asp";
+        vo.requestDataMap = map;
+        vo.jsonParser = new LoginParser();
+        vo.isShowDialog = true;
+        vo.Message = "正在登录...";
+
+
+        doPost(vo, new DataCallback() {
+            @Override
+            public void processData(Object paramObject, boolean paramBoolean) {
+                closeProgress();
+                if (paramObject != null){
+                    Response response = (Response) paramObject;
+
+                    if ("error".equals(response.getResponse())){
+                        UiCommon.INSTANCE.showTip(response.getInfo());
+                        et_login.setText("");
+                        et_login.requestFocus();
+                    }else {
+                        save();
+
+                        User user = new User();
+                        user.setUser_Name(userId);
+                        appContext.saveLoginInfo(user);
+                        redictToActivity(LoginActivity.this, MainActivity.class, null);
+                        finish();
+                    }
+
+                }else {
+                    UiCommon.INSTANCE.showTip("登录失败");
+                }
+
+            }
+
+            @Override
+            public void onFailure(AppException e) {
+                UiCommon.INSTANCE.showTip(e.getErrorMsg());
+                closeProgress();
+            }
+
+            @Override
+            public void onError(ErrorMessage error) {
+                UiCommon.INSTANCE.showTip(error.getText());
+                closeProgress();
+            }
+        });
+    }
 
     private void save(){
         String ipWhole = first + "." + second + "." + third + "." + fourth;
@@ -180,7 +204,10 @@ public class LoginActivity extends BaseActivity {
         }
         @Override
         public void afterTextChanged(Editable s) {
-            if (et_login.getText().toString().length() > 0) {
+
+            String username = s.toString().trim();
+
+            if (username.length() > 0) {
                 btn_login.setEnabled(true);
                 btn_login.setTextColor(getResources().getColor(R.color.login_bg));
             }else {
@@ -272,6 +299,9 @@ public class LoginActivity extends BaseActivity {
     };
 
 
+
+
+
     TextWatcher port = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -291,5 +321,6 @@ public class LoginActivity extends BaseActivity {
 
         }
     };
+
 
 }

@@ -77,6 +77,15 @@ public class AppManager {
 		}
 	}
 
+	public void finishActivityExcept(Class<?> cls) {
+		for (Activity activity : activityStack) {
+			if (!activity.getClass().equals(cls)) {
+				finishActivity(activity);
+			}
+		}
+	}
+
+
 	/**
 	 * 结束所有Activity
 	 */
@@ -88,6 +97,7 @@ public class AppManager {
 		}
 		activityStack.clear();
 	}
+
 
 	/**
 	 * 结束所有Activity
@@ -101,6 +111,14 @@ public class AppManager {
 		activityStack.clear();
 	}
 
+	public void finishTopAmount(int topSize){
+
+		for (int size = activityStack.size() - 1; size < size - 1 - topSize; size--) {
+			if (null != activityStack.get(size)) {
+				activityStack.get(size).finish();
+			}
+		}
+	}
 	/**
 	 * 退出应用程序
 	 */

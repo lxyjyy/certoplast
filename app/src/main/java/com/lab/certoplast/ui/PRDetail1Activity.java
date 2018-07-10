@@ -1,33 +1,44 @@
 package com.lab.certoplast.ui;
 
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lab.certoplast.R;
+import com.lab.certoplast.adapter.PRDetail1Adapter;
 import com.lab.certoplast.app.AppException;
+import com.lab.certoplast.app.AppManager;
 import com.lab.certoplast.bean.DataCallback;
 import com.lab.certoplast.bean.ErrorMessage;
+import com.lab.certoplast.bean.OnItemClickListener;
 import com.lab.certoplast.bean.PRDetail;
 import com.lab.certoplast.bean.RequestVo;
-import com.lab.certoplast.bean.ResponseResult;
+import com.lab.certoplast.bean.Response;
 import com.lab.certoplast.bean.Scan;
+import com.lab.certoplast.bean.ScanResult;
+import com.lab.certoplast.bean.SpaceItemDecoration;
+import com.lab.certoplast.bean.User;
+import com.lab.certoplast.parser.LoginParser;
 import com.lab.certoplast.parser.PRDetail1Parser;
-import com.lab.certoplast.parser.ResponseParser;
 import com.lab.certoplast.parser.ScanParser;
-import com.lab.certoplast.utils.StringUtils;
 import com.lab.certoplast.utils.UiCommon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
 
 /**
  * Created by lxyjyy on 17/11/29.
@@ -35,7 +46,7 @@ import butterknife.OnClick;
  * 生产领用详情
  */
 
-public class PRDetail1Activity extends BaseActivity {
+public class PRDetail1Activity extends BaseActivity implements OnItemClickListener {
 
     @BindView(R.id.btn_left_white)
     ImageButton btn_left_white;
@@ -58,27 +69,30 @@ public class PRDetail1Activity extends BaseActivity {
     TextView tv_product_id;
     //待出库原料批号
     @BindView(R.id.tv_wait_source)
-    TextView tv_wait_source;
+    EditText tv_wait_source;
 
-
+    @BindView(R.id.sv)
+    NestedScrollView sv;
 
     @BindView(R.id.layout2)
     LinearLayout layout2;
 
     @BindView(R.id.tv_has_scan)
     TextView tv_has_scan;
-    //批号
-    @BindView(R.id.tv_productid_num)
-    TextView tv_productid_num;
-    //数量
-    @BindView(R.id.tv_amount)
-    TextView tv_amount;
-    //原货位
-    @BindView(R.id.tv_origin_set)
-    TextView tv_origin_set;
-    //删除
-    @BindView(R.id.btn_delete)
-    Button btn_delete;
+//    //批号
+//    @BindView(R.id.tv_productid_num)
+//    TextView tv_productid_num;
+//    //数量
+//    @BindView(R.id.tv_amount)
+//    TextView tv_amount;
+//    //原货位
+//    @BindView(R.id.tv_origin_set)
+//    TextView tv_origin_set;
+//    //删除
+//    @BindView(R.id.btn_delete)
+//    Button btn_delete;
+    @BindView(R.id.rv_remain)
+    RecyclerView rv_remain;
 
 
     //产品批号
@@ -103,11 +117,27 @@ public class PRDetail1Activity extends BaseActivity {
     @BindView(R.id.show_empty)
     View show_empty;
 
-    private String id;
 
     private String scylid;
     private String product_id;
     private String gongwei;
+
+    @BindView(R.id.tv_content)
+    TextView tv_content;
+    @BindView(R.id.tv_main)
+    TextView tv_main;
+    @BindView(R.id.tv_username)
+    TextView tv_username;
+    @BindView(R.id.tv_logout)
+    TextView tv_logout;
+
+
+    @BindView(R.id.tv_confirm)
+    TextView tv_confirm;
+
+
+    private List<Scan> list;
+    private PRDetail1Adapter adapter;
 
     @Override
     protected View initView() {
@@ -133,44 +163,42 @@ public class PRDetail1Activity extends BaseActivity {
     }
 
 
-    private void show2(final PRDetail prDetail, String scyl_id, String poid){
-        showing();
+    private void show2(String scyl_id, String poid){
         RequestVo vo = new RequestVo();
 
         HashMap<String, String> map = new HashMap<>();
 
-        map.put("Scyl_id", scyl_id);
-        map.put("Product_ID", poid);
+        map.put("id", scyl_id);
+        map.put("poid", poid);
 
 
-        vo.methodName = "GetScjh_Ylsm";
+        vo.methodName = "ProductionOfRecipientsDetail2.asp";
         vo.requestDataMap = map;
         vo.jsonParser = new ScanParser();
 
-        doPost(vo, new DataCallback() {
+        doGet(vo, new DataCallback() {
             @Override
             public void processData(Object paramObject, boolean paramBoolean) {
                     if (paramObject == null){
                         layout2.setVisibility(View.GONE);
                     }else {
-                        List<Scan> list = (List<Scan>) paramObject;
 
-                        layout2.setVisibility(View.VISIBLE);
-                        int amount = 0;
+                        Response response = (Response) paramObject;
+                        if ("error".equals(response.getResponse())){
+                            layout2.setVisibility(View.GONE);
+                        }else {
 
-                        for (Scan scan: list) {
-                            amount = amount + StringUtils.toInt(scan.getOutshuliang(), 0);
-                        }
+                            ScanResult result = (ScanResult) response.getMsg();
 
-                        tv_has_scan.setText("已经扫描总数为: " + amount);
-                        Scan scan = list.get(0);
+                            layout2.setVisibility(View.VISIBLE);
+                            tv_has_scan.setText("已经扫描总数为: " + result.getSl());
 
-                        tv_productid_num.setText("批号: " + scan.getOutshuliang());
-                        tv_amount.setText("数量: " + scan.getOutshuliang());
-                        tv_origin_set.setText("原货位: " + scan.getWarehouse_set());
+                            List<Scan> list1 = result.getMsg();
 
-                        if ("0".equals(prDetail.getStatus())){
-                            btn_delete.setVisibility(View.GONE);
+                            list.clear();
+                            list.addAll(list1);
+                            rv_remain.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
                         }
                     }
             }
@@ -194,43 +222,46 @@ public class PRDetail1Activity extends BaseActivity {
 
         HashMap<String, String> map = new HashMap<>();
 
-        map.put("Scyl_id", scyl_id);
-        map.put("Product_ID", poid);
+        map.put("id", scyl_id);
+        map.put("poid", poid);
 
 
-        vo.methodName = "GetScjhylSearch";
+        vo.methodName = "ProductionOfRecipientsDetail1.asp";
         vo.requestDataMap = map;
         vo.jsonParser = new PRDetail1Parser();
 
-        doPost(vo, new DataCallback() {
+        doGet(vo, new DataCallback() {
             @Override
             public void processData(Object paramObject, boolean paramBoolean) {
 
                 if (paramObject == null){
                     emptyShowing();
                 }else {
+                    Response response = (Response) paramObject;
+                    if ("error".equals(response.getResponse())){
+                        emptyShowing(response.getInfo());
+                    }else {
+                        hide();
+                        PRDetail prDetail = (PRDetail) response.getMsg();
+                        gongwei = prDetail.getGongwei();
 
-                    hide();
-                    PRDetail prDetail = (PRDetail) paramObject;
-                    id = prDetail.getID();
-                    gongwei = prDetail.getGongwei();
+                        showInterface(prDetail);
 
-                    showInterface(prDetail);
-
-                    //请求
-                    show2(prDetail, scyl_id, poid);
+                        //请求
+                        show2(scyl_id, poid);
+                    }
                 }
 
             }
 
             @Override
             public void onFailure(AppException e) {
-                emptyShowing();
+                emptyShowing(e.getErrorMsg());
             }
 
             @Override
             public void onError(ErrorMessage error) {
-                emptyShowing();
+                emptyShowing(error.getText());
             }
         });
     }
@@ -241,27 +272,64 @@ public class PRDetail1Activity extends BaseActivity {
         scyl_no.setText(prDetail.getScyl_ID());
         tv_product_no.setText(prDetail.getProduct_ID());
         tv_apply_no.setText(prDetail.getSc_shuliang() + prDetail.getFroms());
-        tv_product_id.setText(prDetail.getProduct_pid());
 
-        if ("0".equals(prDetail.getStatus())){
-            tv_product_id.setVisibility(View.GONE);
+        tv_product_id.setText(prDetail.getProduct_pid());
+        if ("0".equals(prDetail.getProduct_pid())){
+            ll_product_id.setVisibility(View.GONE);
             ll1.setVisibility(View.GONE);
         }
 
         if (!"0".equals(prDetail.getStatus())){
+            btn_done.setVisibility(View.GONE);
+            tv_confirm.setVisibility(View.GONE);
             rl1.setVisibility(View.GONE);
             ll2.setVisibility(View.GONE);
         }
-
 
     }
 
     private void initialView(){
 
+        User user = appContext.getLoginInfo();
+        tv_username.setText(user.getUser_Name());
+
+
+        rv_remain.addItemDecoration(new SpaceItemDecoration(15));
+        rv_remain.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+
+        btn_left_white.setVisibility(View.VISIBLE);
+
+        sv.setFillViewport(true);
+
+        tv_title.setText("生产领用");
+
+        tv_confirm.setText("完成");
+        tv_confirm.setVisibility(View.VISIBLE);
+
+        sv.setFillViewport(true);
+
+        list = new ArrayList<>();
+        adapter = new PRDetail1Adapter(list);
+        adapter.setOnItemClickListener(this);
+
+
+        postDelayed(tv_wait_source);
+        tv_wait_source.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String search = tv_wait_source.getText().toString().trim();
+                if (!hasFocus && !TextUtils.isEmpty(search)){
+                    //提交
+                    confirm();
+                }
+            }
+        });
+
+
     }
 
 
-    @OnClick({R.id.btn_left_white, R.id.btn_done, R.id.btn_confirm, R.id.btn_delete})
+    @OnClick({R.id.btn_left_white, R.id.btn_confirm, R.id.tv_logout, R.id.tv_main, R.id.tv_confirm})
     public void onClick(View v){
 
         switch (v.getId()){
@@ -272,37 +340,37 @@ public class PRDetail1Activity extends BaseActivity {
                 //提交待出库原料批号
                 confirm();
                 break;
-            case R.id.btn_done:
+            case R.id.tv_confirm:
                 //完成生产领用单
                 done();
                 break;
-            case R.id.btn_delete:
-                delete();
+
+            case R.id.tv_logout:
+                appContext.cleanLoginInfo();
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(this, LoginActivity.class, null);
                 break;
+            case R.id.tv_main:
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(this, MainActivity.class, null);
+                break;
+
         }
     }
 
 
-    private void delete(){
-        //sclysm3-2.asp?id=*
-
-        if (TextUtils.isEmpty(id)){
-            UiCommon.INSTANCE.showTip("id不能为空!");
-            return;
-        }
-
+    private void delete(Scan scan){
 
         RequestVo vo = new RequestVo();
 
         HashMap<String, String> map = new HashMap<>();
-        map.put("id", id);
+        map.put("id", scan.getId());
 
-        String url = "http://" + appContext.ipPort() + "/sclysm3-2.asp";
 
-        vo.requestUrl = url;
+        vo.methodName = "DeletePR.asp";
         vo.requestDataMap = map;
         vo.isShowDialog = true;
-        vo.jsonParser = new ResponseParser();
+        vo.jsonParser = new LoginParser();
         vo.Message = "正在删除...";
 
         doGet(vo, new DataCallback() {
@@ -313,15 +381,13 @@ public class PRDetail1Activity extends BaseActivity {
                 if (paramObject == null){
                     UiCommon.INSTANCE.showTip("删除失败");
                 }else {
-                    ResponseResult result = (ResponseResult) paramObject;
+                    Response response = (Response) paramObject;
 
-                    if (result.getResponse().contains("OK")){
+                    if ("error".equals(response.getResponse())){
+                        UiCommon.INSTANCE.showTip(response.getInfo());
+                    }else{
+                        show2(scylid,product_id);
                         UiCommon.INSTANCE.showTip("删除成功!");
-
-                        layout2.setVisibility(View.GONE);
-
-                    }else {
-                        UiCommon.INSTANCE.showTip("删除失败");
                     }
                 }
             }
@@ -344,9 +410,9 @@ public class PRDetail1Activity extends BaseActivity {
             //sclysm4.asp?scyl_id=*&product_id=*&product_pid=*&gongwei=*&username=*
 
         //待出库原料批号
-        String product_pid = tv_wait_source.getText().toString().trim();
+        final String product_pid = tv_wait_source.getText().toString().trim();
         if (TextUtils.isEmpty(product_pid)){
-            UiCommon.INSTANCE.showTip("清输入待出库原料批号!");
+            UiCommon.INSTANCE.showTip("请输入待出库原料批号!");
             return;
         }
 
@@ -361,12 +427,10 @@ public class PRDetail1Activity extends BaseActivity {
         map.put("username", appContext.getLoginInfo().getUser_Name());
 
 
-        String url = "http://" + appContext.ipPort() + "/sclysm4.asp";
-
-        vo.requestUrl = url;
+        vo.methodName = "sclysm4.asp";
         vo.requestDataMap = map;
         vo.isShowDialog = true;
-        vo.jsonParser = new ResponseParser();
+        vo.jsonParser = new LoginParser();
         vo.Message = "正在提交...";
 
         doGet(vo, new DataCallback() {
@@ -376,16 +440,16 @@ public class PRDetail1Activity extends BaseActivity {
 
                 if (paramObject == null){
                     UiCommon.INSTANCE.showTip("提交失败");
+                    tv_wait_source.setText("");
                 }else {
-                    ResponseResult result = (ResponseResult) paramObject;
+                    Response result = (Response) paramObject;
 
-                    if (result.getResponse().contains("OK")){
-                        UiCommon.INSTANCE.showTip("提交成功!");
-
-                        finish();
-
+                    if ("error".equals(result.getResponse())){
+                        UiCommon.INSTANCE.showTip(result.getInfo());
+                        tv_wait_source.setText("");
                     }else {
-                        UiCommon.INSTANCE.showTip(result.getResponse());
+                        UiCommon.INSTANCE.showTip("提交成功!");
+                        show1(scylid, product_id);
                     }
                 }
             }
@@ -408,19 +472,17 @@ public class PRDetail1Activity extends BaseActivity {
 
     private void done(){
         //完成生产领用单
-        //sclysm3-1.asp?scyl_id=*&product_id=*
+
         RequestVo vo = new RequestVo();
 
         HashMap<String, String> map = new HashMap<>();
-        map.put("scyl_id", scylid);
-        map.put("product_id", product_id);
+        map.put("id", scylid);
+        map.put("poid", product_id);
 
-        String url = "http://" + appContext.ipPort() + "/sclysm3-1.asp";
-
-        vo.requestUrl = url;
+        vo.methodName = "completePR.asp";
         vo.requestDataMap = map;
         vo.isShowDialog = true;
-        vo.jsonParser = new ResponseParser();
+        vo.jsonParser = new LoginParser();
         vo.Message = "正在提交...";
 
         doGet(vo, new DataCallback() {
@@ -431,14 +493,12 @@ public class PRDetail1Activity extends BaseActivity {
                 if (paramObject == null){
                     UiCommon.INSTANCE.showTip("提交失败");
                 }else {
-                    ResponseResult result = (ResponseResult) paramObject;
+                    Response result = (Response) paramObject;
 
-                    if ("false".equals(result.getResponse())){
-                        UiCommon.INSTANCE.showTip("提交失败");
-
-
+                    if ("error".equals(result.getResponse())){
+                        UiCommon.INSTANCE.showTip("提交失败!");
                     }else {
-                        UiCommon.INSTANCE.showTip("提交成功");
+                        UiCommon.INSTANCE.showTip("提交成功!");
                         finish();
                     }
                 }
@@ -463,16 +523,35 @@ public class PRDetail1Activity extends BaseActivity {
     private void showing(){
         searching.setVisibility(View.VISIBLE);
         show_empty.setVisibility(View.GONE);
+        layout1.setVisibility(View.GONE);
     }
 
     private void hide(){
         searching.setVisibility(View.GONE);
         show_empty.setVisibility(View.GONE);
+        layout1.setVisibility(View.VISIBLE);
+
     }
 
     private void emptyShowing(){
         searching.setVisibility(View.GONE);
         show_empty.setVisibility(View.VISIBLE);
+        layout1.setVisibility(View.GONE);
+    }
+
+    private void emptyShowing(String text){
         searching.setVisibility(View.GONE);
+        show_empty.setVisibility(View.VISIBLE);
+        tv_content.setText(text);
+    }
+
+
+    @Override
+    public void onItemClick(View view, int position) {
+
+        Scan scan = list.get(position);
+        delete(scan);
+
+
     }
 }

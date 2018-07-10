@@ -54,8 +54,7 @@ public class SaoMiaoListAdapter extends RecyclerView.Adapter {
             SaoMiao dataSource = list.get(position);
 
             holder1.tv_product.setText("产品编号: " + dataSource.getProduct_id());
-
-
+            holder1.tv_remain.setText(dataSource.getState());
 
             holder1.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

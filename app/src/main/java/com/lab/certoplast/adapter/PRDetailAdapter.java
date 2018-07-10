@@ -64,7 +64,7 @@ public class PRDetailAdapter extends RecyclerView.Adapter {
                 holder1.tv_serial_no.setText("批号: " + dataSource.getProduct_pid());
             }
 
-            holder1.tv_real_out.setVisibility(View.GONE);
+            holder1.tv_real_out.setText("实出: " + dataSource.getSl());
 
             holder1.tv_location.setText("工位: "+ dataSource.getGongwei());
 

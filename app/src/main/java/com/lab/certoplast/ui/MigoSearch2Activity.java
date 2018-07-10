@@ -22,7 +22,9 @@ import com.lab.certoplast.bean.DataCallback;
 import com.lab.certoplast.bean.ErrorMessage;
 import com.lab.certoplast.bean.Migo;
 import com.lab.certoplast.bean.RequestVo;
+import com.lab.certoplast.bean.Response;
 import com.lab.certoplast.bean.ResponseResult;
+import com.lab.certoplast.bean.User;
 import com.lab.certoplast.bean.WareHouse;
 import com.lab.certoplast.parser.MigoParser;
 import com.lab.certoplast.parser.ResponseParser;
@@ -42,7 +44,7 @@ import butterknife.OnClick;
  * 采购收货界面1
  */
 
-public class CgshDetail1Activity extends BaseActivity {
+public class MigoSearch2Activity extends BaseActivity {
 
 
 
@@ -89,6 +91,17 @@ public class CgshDetail1Activity extends BaseActivity {
     @BindView(R.id.view)
     View view;
 
+
+    @BindView(R.id.tv_content)
+    TextView tv_content;
+
+    @BindView(R.id.tv_main)
+    TextView tv_main;
+    @BindView(R.id.tv_username)
+    TextView tv_username;
+    @BindView(R.id.tv_logout)
+    TextView tv_logout;
+
     private List<WareHouse> wareHouseList;
 
     private Migo migo;
@@ -101,6 +114,7 @@ public class CgshDetail1Activity extends BaseActivity {
     private String p_id;
     private String selectid;
     private String username;
+    private String id;
 
 
     @BindView(R.id.sv)
@@ -108,7 +122,7 @@ public class CgshDetail1Activity extends BaseActivity {
 
     @Override
     protected View initView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_cgshdetail1, null, false);
+        return LayoutInflater.from(this).inflate(R.layout.activity_migosearch2, null, false);
     }
 
     @Override
@@ -119,11 +133,30 @@ public class CgshDetail1Activity extends BaseActivity {
 
 
     private void initialView(){
+
+
         wareHouseList = new ArrayList<>();
 
         btn_left_white.setVisibility(View.VISIBLE);
         tv_title.setText("采购收货");
         sv.setFillViewport(true);
+
+        User user = appContext.getLoginInfo();
+        tv_username.setText(user.getUser_Name());
+
+        postDelayed(et_search);
+
+        et_search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String search = et_search.getText().toString().trim();
+                if (!hasFocus && !TextUtils.isEmpty(search)){
+                    //提交
+                    btn_search();
+                }
+            }
+        });
+
     }
 
     private void initialData(){
@@ -135,35 +168,44 @@ public class CgshDetail1Activity extends BaseActivity {
         showing();
 
         HashMap<String, String> map = new HashMap<>();
-        map.put("Ruku_ID", ruku_id);
-        map.put("Product_PID", product_pid);
+        map.put("rukuid", ruku_id);
+        map.put("pid", product_pid);
 
         RequestVo vo = new RequestVo();
-        vo.methodName = "GetKuInsearch_ProductID";
+        vo.methodName = "MigoSearch1.asp";
         vo.requestDataMap = map;
         vo.jsonParser = new MigoParser();
 
-        doPost(vo, new DataCallback() {
+        doGet(vo, new DataCallback() {
             @Override
             public void processData(Object paramObject, boolean paramBoolean) {
                 if (paramObject == null){
                     emptyShowing();
                 }else {
 
-                    hide();
-                    migo = (Migo) paramObject;
-                    setShow(migo);
+                    Response response = (Response) paramObject;
+                    if ("error".equals(response.getResponse())){
+                        emptyShowing(response.getInfo());
+                        sendErrorClose();
+                    }else {
+                        hide();
+                        migo = (Migo) response.getMsg();
+                        setShow(migo);
+                    }
+
                 }
             }
 
             @Override
             public void onFailure(AppException e) {
-                emptyShowing();
+                emptyShowing(e.getErrorMsg());
+                sendErrorClose();
             }
 
             @Override
             public void onError(ErrorMessage error) {
-                emptyShowing();
+                emptyShowing(error.getText());
+                sendErrorClose();
             }
         });
     }
@@ -172,26 +214,26 @@ public class CgshDetail1Activity extends BaseActivity {
     private void setShow(Migo migo){
 
         //入库单号
-        tv_rkdh.setText(migo.getRuku_ID());
+        tv_rkdh.setText(migo.getRuku_id());
         //采购单号
-        tv_cgdh.setText(migo.getCaigou_ID());
+        tv_cgdh.setText(migo.getCaigou_id());
         //产品名称
         tv_product_name.setText(migo.getProduct());
         //产品批号
-        tv_product_serial_num.setText(migo.getProduct_PID());
+        tv_product_serial_num.setText(migo.getPid());
         //产品类型
         tv_product_type.setText(migo.getType());
         //入库数量
-        tv_ruku_amount.setText(migo.getRuku_Shuliang());
+        tv_ruku_amount.setText(migo.getRuku_shuliang());
         //库房类型
         tv_kufang_type.setText(migo.getWarehouse());
         //当前状态
-        tv_now_type.setText(migo.getStatus_Class());
+        tv_now_type.setText(migo.getStatus_class());
 
-        caigourk_id = migo.getRuku_ID();
-        caigou_id = migo.getCaigou_ID();
-        p_id = migo.getProduct_PID();
-
+        caigourk_id = migo.getRuku_id();
+        caigou_id = migo.getCaigou_id();
+        p_id = migo.getPid();
+        id = migo.getId();
     }
 
 
@@ -213,7 +255,15 @@ public class CgshDetail1Activity extends BaseActivity {
         layout1.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.btn_left_white, R.id.btn_search, R.id.et_select, R.id.btn_commit})
+
+    private void emptyShowing(String text){
+        show_empty.setVisibility(View.VISIBLE);
+        searching.setVisibility(View.GONE);
+        layout1.setVisibility(View.GONE);
+        tv_content.setText(text);
+    }
+
+    @OnClick({R.id.btn_left_white, R.id.btn_search, R.id.et_select, R.id.btn_commit, R.id.tv_logout, R.id.tv_main})
     public void onClick(View v){
 
         switch (v.getId())
@@ -233,6 +283,16 @@ public class CgshDetail1Activity extends BaseActivity {
                 //提交
 
                 commit();
+                break;
+
+            case R.id.tv_logout:
+                appContext.cleanLoginInfo();
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(MigoSearch2Activity.this, LoginActivity.class, null);
+                break;
+            case R.id.tv_main:
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(MigoSearch2Activity.this, MainActivity.class, null);
                 break;
         }
     }
@@ -259,10 +319,10 @@ public class CgshDetail1Activity extends BaseActivity {
         map.put("p_id", p_id);
         map.put("selectid", selectid);
         map.put("username", username);
+        map.put("id", id);
 
-          String url = "http://" + appContext.ipPort() + "/caigousm5.asp";
 
-          vo.requestUrl = url;
+          vo.methodName = "caigousm5.asp";
         vo.requestDataMap = map;
         vo.isShowDialog = true;
         vo.jsonParser = new ResponseParser();
@@ -280,9 +340,8 @@ public class CgshDetail1Activity extends BaseActivity {
 
                     if (result.getResponse().contains("成功")){
                         UiCommon.INSTANCE.showTip("采购收货成功!");
-                        //跳转到主页面
-                        AppManager.getAppManager().finishAllActivity();
-                        redictToActivity(CgshDetail1Activity.this, MainActivity.class, null);
+
+                        finish();
                     }else {
                         UiCommon.INSTANCE.showTip(result.getResponse());
                     }
@@ -317,6 +376,7 @@ public class CgshDetail1Activity extends BaseActivity {
                 et_select.setText("");
                 et_select.setText(wareHouse.getWareHouse_Set());
                 selectid = wareHouse.getWareHouse_Set();
+                commit();
             }
         });
     }
@@ -354,49 +414,62 @@ public class CgshDetail1Activity extends BaseActivity {
 
 
         HashMap<String, String> map = new HashMap<>();
-        map.put("Warehouse_Set", search);
-        map.put("Warehouse_ID", migo.getClassId());
+        map.put("huoweiid", search);
+        map.put("warehouseid", migo.getClassID());
 
 
         RequestVo vo = new RequestVo();
 
-        vo.methodName = "GetWarehoustSearch";
+        vo.methodName = "WarehouseSearch.asp";
         vo.requestDataMap = map;
         vo.isShowDialog = true;
         vo.Message = "正在获取货位代码列表";
         vo.jsonParser = new WareHouseListParser();
 
-        doPost(vo, new DataCallback() {
+        doGet(vo, new DataCallback() {
             @Override
             public void processData(Object paramObject, boolean paramBoolean) {
                 closeProgress();
                 if (paramObject == null){
                     UiCommon.INSTANCE.showTip("获取货位代码失败");
                 }else {
-                    List<WareHouse> list = (List<WareHouse>) paramObject;
 
-                    if (list.size() <= 0){
-                        UiCommon.INSTANCE.showTip("未查询到对应的货位!");
+                    Response response = (Response) paramObject;
+                    if ("error".equals(response.getResponse())){
+                        UiCommon.INSTANCE.showTip(response.getInfo());
+                        et_search.setText("");
                     }else {
-                        wareHouseList.clear();
-                        wareHouseList.addAll(list);
+                        List<WareHouse> list = (List<WareHouse>) response.getMsg();
 
-                        alertDialog(wareHouseList, new OnItemClick() {
-                            @Override
-                            public void ItemContent(List<WareHouse> areas) {
+//                        wareHouseList.clear();
+//                        wareHouseList.addAll(list);
+//
+//                        alertDialog(wareHouseList, new OnItemClick() {
+//                                @Override
+//                                public void ItemContent(List<WareHouse> areas) {
+//
+//                                    hide_search();
+//
+//                                    WareHouse wareHouse = findSelectedArea(areas);
+//                                    if (wareHouse == null){
+//                                        UiCommon.INSTANCE.showTip("请选择货位代码!");
+//                                    }
+//                                    et_select.setText("");
+//                                    et_select.setText(wareHouse.getWareHouse_Set());
+//                                    selectid = wareHouse.getWareHouse_Set();
+//                                    commit();
+//                                }
+//                            });
 
-                                hide_search();
+                        //默认选择第一条货位位置进行提交
+                        if (list != null && list.size() > 0){
+                            WareHouse wareHouse = list.get(0);
+                            selectid = wareHouse.getWareHouse_Set();
+                            commit();
+                        }else {
+                            UiCommon.INSTANCE.showTip("未查询到此货位!");
+                        }
 
-                                WareHouse wareHouse = findSelectedArea(areas);
-                                if (wareHouse == null){
-                                    UiCommon.INSTANCE.showTip("请选择货位代码!");
-                                }
-                                et_select.setText("");
-                                et_select.setText(wareHouse.getWareHouse_Set());
-                                selectid = wareHouse.getWareHouse_Set();
-
-                            }
-                        });
                     }
                 }
             }
@@ -430,10 +503,10 @@ public class CgshDetail1Activity extends BaseActivity {
 
     private void alertDialog(final List<WareHouse> areas,
                              final OnItemClick onItemClick) {
-        final AlertDialog myDialog = new AlertDialog.Builder(CgshDetail1Activity.this)
+        final AlertDialog myDialog = new AlertDialog.Builder(MigoSearch2Activity.this)
                 .create();
         myDialog.show();
-        WindowManager windowManager = CgshDetail1Activity.this.getWindowManager();
+        WindowManager windowManager = MigoSearch2Activity.this.getWindowManager();
         Display display = windowManager.getDefaultDisplay();
         WindowManager.LayoutParams lp = myDialog.getWindow().getAttributes();
         lp.width = (int) (display.getWidth() * 11 / 12); // 设置宽度
@@ -455,7 +528,9 @@ public class CgshDetail1Activity extends BaseActivity {
 
             }
         });
-        final ShowWareHouseAdapter showWareHouseAdapter = new ShowWareHouseAdapter(CgshDetail1Activity.this, areas);
+
+
+        final ShowWareHouseAdapter showWareHouseAdapter = new ShowWareHouseAdapter(MigoSearch2Activity.this, areas);
         myListView.setAdapter(showWareHouseAdapter);
 
         // 点击每一项

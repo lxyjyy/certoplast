@@ -1,10 +1,7 @@
 package com.lab.certoplast.parser;
 
+import com.google.gson.JsonParseException;
 import com.lab.certoplast.bean.ResponseResult;
-
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * Created by lxyjyy on 17/12/5.
@@ -13,7 +10,7 @@ import java.io.IOException;
 public class ResponseParser extends BaseParser<ResponseResult> {
 
     @Override
-    public ResponseResult parse(String paramString) throws IOException, XmlPullParserException {
+    public ResponseResult parse(String paramString) throws JsonParseException{
         if (paramString != null)
         {
             ResponseResult responseResult = new ResponseResult();

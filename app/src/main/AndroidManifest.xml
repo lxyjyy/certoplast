@@ -33,20 +33,27 @@
         <activity android:name=".ui.MigoSearchActivity"/>
 
         <!-- 生产领用列表 -->
-        <activity android:name=".ui.ProductionOfRecipientsActivity"/>
+        <activity android:name=".ui.PRActivity"/>
         <activity
-            android:name=".ui.ProductionOfRecipientsDetailActivity"/>
+            android:name=".ui.PRDetailActivity"/>
         <!-- 生产领用采购收货结果 -->
-        <activity android:name=".ui.MigoSearchListActivity"/>
-        <activity android:name=".ui.CgshDetail1Activity"/>
+        <activity android:name=".ui.MigoSearch1Activity"/>
+        <activity android:name=".ui.MigoSearch2Activity"/>
         <activity android:name=".ui.WareHousingActivity"/>
         <activity android:name=".ui.FullProActivity"/>
         <activity android:name=".ui.ShippingActivity"/>
         <activity android:name=".ui.ShippingDetailActivity"/>
         <activity android:name=".ui.FullProDetailActivity"/>
-        <activity android:name=".ui.FullProDetail1Activity"/>
+
+        <activity android:name=".ui.FullProDetail2Activity"/>
         <activity android:name=".ui.HalfProActivity"/>
         <activity android:name=".ui.HalfProDetailActivity"/>
+        <activity android:name=".ui.PRDetail1Activity"/>
+        <activity android:name=".ui.ScanListDetailActivity"/>
+
+        <activity android:name=".ui.MaterialSearch1Activity"/>
+        <activity android:name=".ui.MaterialSearchActivity"/>
+        <activity android:name=".ui.MaterialSearch2Activity"/>
 
     </application>
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:background="@color/layout_bg"
     android:layout_height="match_parent">
 
@@ -8,8 +9,31 @@
 
 
     <RelativeLayout
+        android:layout_weight="1.0"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_h1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/login_bg"
+            android:textSize="30sp"
+            android:layout_centerInParent="true"
+            android:layout_above="@+id/top1"
+            android:text="采购收货管理"/>
+
+
+        <TextView
+            android:id="@+id/top1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/login_bg"
+            android:textSize="25sp"
+            android:layout_centerInParent="true"
+            android:layout_above="@+id/et_search"
+            android:layout_marginTop="50dp"
+            android:text="采购入库单号:"/>
 
 
         <EditText
@@ -20,10 +44,13 @@
             android:textColor="@color/a_c"
             android:singleLine="true"
             android:layout_centerInParent="true"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:textColorHint="@color/a_c"
-            android:background="@null"/>
+            android:background="@null">
+            <requestFocus/>
+            </EditText>
 
         <View
             android:layout_width="match_parent"
@@ -48,5 +75,7 @@
             android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
+    <include
+        layout="@layout/bottom_bar"/>
 
 </LinearLayout>

@@ -7,37 +7,27 @@ package com.lab.certoplast.bean;
 
 public class Scan extends Base {
 
-    private String scyl_id;
-    private String product_id;
-    private String product_pid;
+    private String Product_pid;
     private String warehouse_set;
     private String outshuliang;
-    private String intime;
-    private String username;
-    private String gongwei;
+    private String status;
+    private String id;
 
-    public String getScyl_id() {
-        return scyl_id;
+
+    public String getId() {
+        return id;
     }
 
-    public void setScyl_id(String scyl_id) {
-        this.scyl_id = scyl_id;
-    }
-
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getProduct_pid() {
-        return product_pid;
+        return Product_pid;
     }
 
     public void setProduct_pid(String product_pid) {
-        this.product_pid = product_pid;
+        Product_pid = product_pid;
     }
 
     public String getWarehouse_set() {
@@ -56,27 +46,11 @@ public class Scan extends Base {
         this.outshuliang = outshuliang;
     }
 
-    public String getIntime() {
-        return intime;
+    public String getStatus() {
+        return status;
     }
 
-    public void setIntime(String intime) {
-        this.intime = intime;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getGongwei() {
-        return gongwei;
-    }
-
-    public void setGongwei(String gongwei) {
-        this.gongwei = gongwei;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

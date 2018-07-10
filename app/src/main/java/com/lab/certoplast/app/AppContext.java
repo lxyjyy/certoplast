@@ -33,8 +33,8 @@ public class AppContext extends Application {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		// 注册App异常崩溃处理器 //开发时候未注册异常崩溃处理器
-		Thread.setDefaultUncaughtExceptionHandler(AppException
-				.getAppExceptionHandler());
+//		Thread.setDefaultUncaughtExceptionHandler(AppException
+//				.getAppExceptionHandler());
 
 		// 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
 		// SDKInitializer.initialize(this);
@@ -105,8 +105,7 @@ public class AppContext extends Application {
 	 */
 	public void initLoginInfo() {
 		User loginUser = getLoginInfo();
-		if (loginUser != null && !TextUtils.isEmpty(loginUser.getUser_Name())
-				&& !TextUtils.isEmpty(loginUser.getPassWord())) {
+		if (loginUser != null && !TextUtils.isEmpty(loginUser.getUser_Name())) {
 			// 用户名和密码不为空
 			this.login = true;
 		} else {
@@ -125,8 +124,6 @@ public class AppContext extends Application {
 		setProperties(new Properties() {
 			{
 				setProperty("user.username", user.getUser_Name());
-				setProperty("user.pwd", user.getPassWord());
-				setProperty("user.loginDate", user.getLoginTime());
 			}
 		});
 	}
@@ -152,7 +149,7 @@ public class AppContext extends Application {
 	 * 清除登录信息
 	 */
 	public void cleanLoginInfo() {
-		removeProperty("user.username", "user.pwd", "user.loginDate");
+		removeProperty("user.username");
 	}
 
 	/**
@@ -163,8 +160,7 @@ public class AppContext extends Application {
 	public User getLoginInfo() {
 		User lu = new User();
 		lu.setUser_Name(getProperty("user.username"));
-		lu.setPassWord( getProperty("user.pwd"));
-		lu.setLoginTime(getProperty("user.loginDate"));
+
 		return lu;
 	}
 

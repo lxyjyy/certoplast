@@ -6,6 +6,18 @@
 
     <include layout="@layout/top_bar"/>
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1.0"
+    android:orientation="vertical">
+    <LinearLayout
+        style="@style/newSheetLineStyle"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/line_c"/>
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/half_pro"
         android:layout_width="match_parent"
@@ -22,6 +34,7 @@
 
 
         <TextView
+            android:id="@+id/tv_left"
             android:layout_toRightOf="@+id/left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,19 +43,24 @@
             android:layout_marginLeft="15dp"
             android:textSize="17dp"/>
 
+        <TextView
+            android:id="@+id/tv_half"
+            android:layout_toRightOf="@+id/tv_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/red"
+            android:layout_marginLeft="15dp"
+            android:textSize="17dp"/>
 
 
     </RelativeLayout>
-
-
-
     <LinearLayout
         style="@style/newSheetLineStyle"
         android:layout_height="wrap_content">
 
         <include layout="@layout/line_c"/>
     </LinearLayout>
-
     <RelativeLayout
         android:id="@+id/full_pro"
         android:layout_width="match_parent"
@@ -59,11 +77,22 @@
 
 
         <TextView
+            android:id="@+id/tv_second_left"
             android:layout_toRightOf="@+id/second_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="成品入库"
+            android:layout_marginLeft="15dp"
+            android:textSize="17dp"/>
+
+        <TextView
+            android:id="@+id/tv_full"
+            android:layout_toRightOf="@+id/tv_second_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/red"
             android:layout_marginLeft="15dp"
             android:textSize="17dp"/>
 
@@ -74,5 +103,7 @@
 
         <include layout="@layout/line_c"/>
     </LinearLayout>
+</LinearLayout>
 
+<include layout="@layout/bottom_bar"/>
 </LinearLayout>

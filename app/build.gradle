@@ -6,17 +6,27 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.lab.certoplast"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 25
-        versionCode 3
-        versionName "1.2"
+        versionCode 10
+        versionName "1.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+
+    signingConfigs{
+        release{
+            keyAlias 'imagealgorithmlabKeyStore'
+            keyPassword 'android'
+            storeFile file('Imagealgorithmlab_keyStore.jks')
+            storePassword 'android'
+        }
     }
     buildTypes {
         release {
             minifyEnabled true
             zipAlignEnabled true
-//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             shrinkResources false
             proguardFiles 'proguard-rules.pro'
 
@@ -49,4 +59,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile files('libs/commons-httpclient-3.1.jar')
+    //table
+    compile 'com.github.huangyanbin:SmartTable:2.2.0'
 }

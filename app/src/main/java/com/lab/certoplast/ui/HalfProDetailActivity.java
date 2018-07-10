@@ -1,6 +1,6 @@
 package com.lab.certoplast.ui;
 
-import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +12,17 @@ import android.widget.TextView;
 
 import com.lab.certoplast.R;
 import com.lab.certoplast.app.AppException;
+import com.lab.certoplast.app.AppManager;
 import com.lab.certoplast.bean.DataCallback;
 import com.lab.certoplast.bean.ErrorMessage;
 import com.lab.certoplast.bean.FullPro;
 import com.lab.certoplast.bean.RequestVo;
+import com.lab.certoplast.bean.Response;
 import com.lab.certoplast.parser.FullProParser;
+import com.lab.certoplast.parser.LoginParser;
 import com.lab.certoplast.utils.UiCommon;
 
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -72,8 +74,22 @@ public class HalfProDetailActivity extends BaseActivity {
     @BindView(R.id.btn_search)
     Button btn_search;
 
+    @BindView(R.id.tv_content)
+    TextView tv_content;
+
+    @BindView(R.id.tv_main)
+    TextView tv_main;
+    @BindView(R.id.tv_username)
+    TextView tv_username;
+    @BindView(R.id.tv_logout)
+    TextView tv_logout;
+
+    @BindView(R.id.sv)
+    NestedScrollView sv;
+
     private String id;
     private String p_id;
+    private String warehouse;
 
     @Override
     protected View initView() {
@@ -86,6 +102,13 @@ public class HalfProDetailActivity extends BaseActivity {
         initialData();
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        et_search.setText("");
+        et_search.requestFocus();
+    }
 
     /**
      * 初始化控件
@@ -100,49 +123,152 @@ public class HalfProDetailActivity extends BaseActivity {
             }
         });
 
+        sv.setFillViewport(true);
+
         tv_title.setText("半成品入库");
+
+        postDelayed(et_search);
+
+
+        et_search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String search = et_search.getText().toString().trim();
+                if (!hasFocus && !TextUtils.isEmpty(search)){
+                    //提交
+                    search();
+                }
+            }
+        });
     }
 
 
-    @OnClick({R.id.btn_search})
+    @OnClick({R.id.btn_search,R.id.tv_logout, R.id.tv_main})
     public void onClick(View v){
          switch (v.getId()){
              case R.id.btn_search:
 
                  search();
                  break;
+
+             case R.id.tv_logout:
+                 appContext.cleanLoginInfo();
+                 AppManager.getAppManager().finishAllActivity();
+                 redictToActivity(this, LoginActivity.class, null);
+                 break;
+             case R.id.tv_main:
+                 AppManager.getAppManager().finishAllActivity();
+                 redictToActivity(this, MainActivity.class, null);
+                 break;
          }
     }
 
     private void search(){
-        String warehost = et_search.getText().toString().trim();
+        final String warehost = et_search.getText().toString().trim();
 
         if (TextUtils.isEmpty(warehost)){
-            UiCommon.INSTANCE.showTip("请输入入库货位!");
+            UiCommon.INSTANCE.showTip("请输入入库货位代码!");
             return;
         }
 
-        //货位ID
-        //id
-        //p_id
+        RequestVo vo  = new RequestVo();
 
-        // "Select * From [warehoustsearch]"
-        //sql = sql & " where warehouse_set like '%"&huoweiid&"%'
-        // and product_pid='0' and product_id='0' and
-        // class='"&warehouse&"' order by warehouse_set"
-        //sql = sql & " where warehouse_set='"&huoweiid&"'
-        // and product_pid='0' and product_id='0' and
-        // class='"&warehouse&"' order by warehouse_set"
+        HashMap<String, String> map = new HashMap<>();
 
-        Bundle bundle = new Bundle();
-        bundle.putString("id", id);
-        bundle.putString("p_id", p_id);
-        bundle.putString("warehost", warehost);
+        map.put("id", id);
+        map.put("huoweiid", warehost);
 
+        vo.methodName = "HalfProDetail1.asp";
+        vo.jsonParser = new LoginParser();
+        vo.requestDataMap = map;
+        vo.isShowDialog = true;
 
+        doGet(vo, new DataCallback() {
+            @Override
+            public void processData(Object paramObject, boolean paramBoolean) {
+
+                if (paramObject == null){
+                    UiCommon.INSTANCE.showTip("无对应的货位!");
+                    closeProgress();
+                    et_search.setText("");
+                }else {
+
+                    Response response = (Response) paramObject;
+
+                    if ("error".equals(response.getResponse())){
+                        closeProgress();
+                        UiCommon.INSTANCE.showTip(response.getInfo());
+                        et_search.setText("");
+                    }else{
+                        commit(warehost);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(AppException e) {
+                closeProgress();
+                UiCommon.INSTANCE.showTip(e.getErrorMsg());
+            }
+
+            @Override
+            public void onError(ErrorMessage error) {
+                closeProgress();
+                UiCommon.INSTANCE.showTip(error.getText());
+            }
+        });
 
     }
 
+
+
+    private void commit(String huoweiid){
+        RequestVo vo  = new RequestVo();
+
+        HashMap<String, String> map = new HashMap<>();
+
+        map.put("p_id", p_id);
+        map.put("huoweiid", huoweiid);
+        map.put("sid", id);
+
+        vo.methodName = "HalfProDetail2.asp";
+        vo.jsonParser = new LoginParser();
+        vo.requestDataMap = map;
+
+        doGet(vo, new DataCallback() {
+            @Override
+            public void processData(Object paramObject, boolean paramBoolean) {
+                closeProgress();
+                if (paramObject == null){
+                    UiCommon.INSTANCE.showTip("提交失败");
+                    et_search.setText("");
+                }else {
+                    Response response = (Response) paramObject;
+
+                    if ("error".equals(response.getResponse())){
+                        UiCommon.INSTANCE.showTip(response.getInfo());
+                        et_search.setText("");
+                    }else{
+                        finish();
+                        UiCommon.INSTANCE.showTip("提交成功!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(AppException e) {
+                UiCommon.INSTANCE.showTip(e.getErrorMsg());
+                closeProgress();
+            }
+
+            @Override
+            public void onError(ErrorMessage error) {
+                UiCommon.INSTANCE.showTip(error.getText());
+                closeProgress();
+            }
+        });
+
+    }
 
     /**
      * 初始化数据
@@ -150,10 +276,6 @@ public class HalfProDetailActivity extends BaseActivity {
     private void initialData(){
         String search = getIntent().getExtras().getString("search");
 
-        String[] str = search.split("\\-");
-
-        String pkid = str[0];
-        String product_pid = str[1];
 
         //成品入库
         showing();
@@ -161,29 +283,30 @@ public class HalfProDetailActivity extends BaseActivity {
 
         HashMap<String, String> map = new HashMap<>();
 
-        map.put("Product_PID", product_pid);
-        map.put("Product_ID", pkid);
+        map.put("product_pid", search);
 
-        vo.methodName = "GetScjhinSearch";
+        vo.methodName = "HalfProDetail.asp";
         vo.jsonParser = new FullProParser();
         vo.requestDataMap = map;
 
-        doPost(vo, new DataCallback() {
+        doGet(vo, new DataCallback() {
             @Override
             public void processData(Object paramObject, boolean paramBoolean) {
                 if (paramObject == null){
                     emptyShowing();
+                    sendErrorClose();
                 }else {
 
-                    List<FullPro> list1 = (List<FullPro>) paramObject;
+                    Response response = (Response) paramObject;
 
-                    if (list1.size() <= 0){
-                        emptyShowing();
-                    }else {
-                        hide();
-                        FullPro halfPro = list1.get(0);
-                        showInterface(halfPro);
+                    if ("error".equals(response.getResponse())){
+                        emptyShowing(response.getInfo());
+                        sendErrorClose();
+                    }else{
+                        FullPro halfpro = (FullPro) response.getMsg();
 
+                            hide();
+                            showInterface(halfpro);
                     }
                 }
             }
@@ -212,8 +335,9 @@ public class HalfProDetailActivity extends BaseActivity {
         tv_location.setText("工位: " + halfPro.getGongwei());
 
 
-        id = halfPro.getID();
+        id = halfPro.getId();
         p_id = halfPro.getProduct_ID();
+        warehouse = halfPro.getWarehouse();
     }
 
 
@@ -225,10 +349,19 @@ public class HalfProDetailActivity extends BaseActivity {
     private void hide(){
         searching.setVisibility(View.GONE);
         layout1.setVisibility(View.VISIBLE);
+        show_empty.setVisibility(View.GONE);
     }
 
     private void emptyShowing(){
         show_empty.setVisibility(View.VISIBLE);
         layout1.setVisibility(View.GONE);
+        searching.setVisibility(View.GONE);
+    }
+
+    private void emptyShowing(String text){
+        show_empty.setVisibility(View.VISIBLE);
+        layout1.setVisibility(View.GONE);
+        searching.setVisibility(View.GONE);
+        tv_content.setText(text);
     }
 }

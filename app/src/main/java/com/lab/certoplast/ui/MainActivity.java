@@ -66,6 +66,10 @@ public class MainActivity extends BaseActivity implements OnItemClickListener{
         dataSource6.setDrawableId(R.mipmap.icon_zx);
         dataSource6.setText("注销");
 
+        DataSource datasource7 = new DataSource();
+        datasource7.setDrawableId(R.mipmap.icon_cgsh);
+        datasource7.setText("原料TAG");
+
         List<DataSource> sources = new ArrayList<>();
         sources.add(dataSource1);
         sources.add(dataSource2);
@@ -73,6 +77,7 @@ public class MainActivity extends BaseActivity implements OnItemClickListener{
         sources.add(dataSource4);
         sources.add(dataSource5);
         sources.add(dataSource6);
+        sources.add(datasource7);
 
 
         NineAdapter nineAdapter = new NineAdapter(sources);
@@ -95,7 +100,7 @@ public class MainActivity extends BaseActivity implements OnItemClickListener{
                 break;
             case 1:
                 //生产领用
-                redictToActivity(this, ProductionOfRecipientsActivity.class, null);
+                redictToActivity(this, PRActivity.class, null);
                 break;
             case 2:
                 //产品入库
@@ -114,6 +119,10 @@ public class MainActivity extends BaseActivity implements OnItemClickListener{
                 redictToActivity(this, LoginActivity.class, null);
                 appContext.cleanLoginInfo();
                 finish();
+                break;
+            case 6:
+                //material 原料
+                redictToActivity(this, MaterialSearchActivity.class, null);
                 break;
         }
     }

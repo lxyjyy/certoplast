@@ -6,8 +6,15 @@
     android:background="@color/layout_bg">
 
     <include layout="@layout/top_bar"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1.0"
+    android:orientation="vertical">
+
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -23,6 +30,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:textSize="25sp"
+                    android:textColor="@color/login_bg"
+                    android:text="生产领用系统"/>
+
                 <LinearLayout
                     style="@style/newSheetLLStyle"
                     android:layout_marginTop="@dimen/material_margin_top"
@@ -121,16 +139,15 @@
                         android:layout_centerVertical="true"
                         android:text="待出库原料批号:"/>
 
-                    <TextView
+                    <EditText
                         android:id="@+id/tv_wait_source"
                         style="@style/materialEditTextStyle"
-                        android:layout_width="150dp"
+                        android:layout_width="250dp"
                         android:hint="待出库原料批号"
                         android:layout_alignParentRight="true"
 
                         />
                 </RelativeLayout>
-
 
 
                 <LinearLayout
@@ -145,20 +162,21 @@
 
                     <Button
                         android:id="@+id/btn_done"
-                        android:layout_width="0dp"
                         android:layout_height="41dp"
-                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
                         android:background="@drawable/rectangle_construction_report_unagree"
                         android:gravity="center"
                         android:text="完成"
                         android:textColor="@color/colorPrima"
+                        android:visibility="gone"
                         android:textSize="17sp"/>
 
                     <Button
                         android:id="@+id/btn_confirm"
-                        android:layout_width="150dp"
+                        android:layout_width="match_parent"
                         android:layout_height="41dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginRight="40dp"
                         android:background="@drawable/rectangle_construction_report_agree"
                         android:gravity="center"
                         android:text="提交"
@@ -170,21 +188,19 @@
 
                 </LinearLayout>
 
-                <!--<android.support.v7.widget.RecyclerView-->
-                    <!--android:id="@+id/rv_remain"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_marginTop="20dp"-->
-                    <!--android:cacheColorHint="@null"-->
-                    <!--android:scrollbars="none"/>-->
-                <!---->
+
           <LinearLayout
-              android:id="@+id/layout2"
+
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:visibility="gone"
               android:orientation="vertical">
 
+              <LinearLayout
+                  android:id="@+id/layout2"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:visibility="gone"
+                  android:orientation="vertical">
               <TextView
                   android:id="@+id/tv_has_scan"
                   android:layout_marginTop="15dp"
@@ -193,50 +209,13 @@
                   android:layout_height="wrap_content"
                   android:text="已经扫描总数为"/>
 
-              <LinearLayout
-                  android:background="@android:color/white"
+                  <android.support.v7.widget.RecyclerView
+                  android:id="@+id/rv_remain"
                   android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal">
-                  <LinearLayout
-                      android:layout_width="0dp"
-                      android:layout_weight="4.0"
-                      android:layout_height="match_parent"
-                      android:paddingLeft="@dimen/padding_left"
-                      android:orientation="vertical">
-
-                      <TextView
-                          android:id="@+id/tv_productid_num"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:layout_marginTop="10dp"
-                          android:text="批号"/>
-
-                      <TextView
-                          android:id="@+id/tv_amount"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:layout_marginTop="5dp"
-                          android:text="数量"/>
-
-                      <TextView
-                          android:id="@+id/tv_origin_set"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:layout_marginTop="5dp"
-                          android:layout_marginBottom="10dp"
-                          android:text="原货位"/>
-
-                  </LinearLayout>
-
-                  <Button
-                      android:id="@+id/btn_delete"
-                      android:layout_width="0dp"
-                      android:layout_weight="1.0"
-                      android:layout_height="match_parent"
-                      android:background="@android:color/holo_red_light"
-                      android:textColor="@android:color/white"
-                      android:text="删除"/>
+                  android:layout_height="match_parent"
+                  android:layout_marginTop="20dp"
+                  android:cacheColorHint="@null"
+                  android:scrollbars="none"/>
 
 
               </LinearLayout>
@@ -258,4 +237,7 @@
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
+</LinearLayout>
+
+    <include layout="@layout/bottom_bar"/>
 </LinearLayout>

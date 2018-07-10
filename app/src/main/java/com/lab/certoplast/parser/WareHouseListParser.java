@@ -1,35 +1,31 @@
 package com.lab.certoplast.parser;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.lab.certoplast.bean.Response;
 import com.lab.certoplast.bean.WareHouse;
-import com.lab.certoplast.utils.StringUtils;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by lxyjyy on 17/11/16.
  */
 
-public class WareHouseListParser extends BaseParser<List<WareHouse>>{
+public class WareHouseListParser extends BaseParser<Response>{
 
     @Override
-    public List<WareHouse> parse(String paramString) throws IOException, XmlPullParserException {
+    public Response parse(String paramString) throws JsonParseException {
 
         if (paramString != null)
         {
-            String result = StringUtils.xmlParser(paramString);
 
-            Type founderListType = new TypeToken<ArrayList<WareHouse>>(){}.getType();
+            Type founderListType = new TypeToken<Response<List<WareHouse>>>(){}.getType();
 
-            List<WareHouse> migoList = new Gson().fromJson(result, founderListType);
+            Response response = new Gson().fromJson(paramString, founderListType);
 
-            return migoList;
+            return response;
         }
 
         return null;

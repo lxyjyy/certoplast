@@ -6,6 +6,11 @@ android:layout_height="match_parent"
 android:background="@color/layout_bg">
 
 <include layout="@layout/top_bar"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1.0">
+
 
 <android.support.v4.widget.NestedScrollView
     android:id="@+id/sv"
@@ -79,7 +84,7 @@ android:background="@color/layout_bg">
                 <EditText
                     android:id="@+id/tv_customer_num"
                     style="@style/materialEditTextStyle"
-                    android:layout_width="150dp"
+                    android:layout_width="250dp"
                     android:hint="请输入客户编号"
                     android:layout_alignParentRight="true"
                     />
@@ -105,7 +110,7 @@ android:background="@color/layout_bg">
                 <EditText
                     android:id="@+id/tv_product_num"
                     style="@style/materialEditTextStyle"
-                    android:layout_width="150dp"
+                    android:layout_width="250dp"
                     android:hint="请输入产品编号"
                     android:layout_alignParentRight="true"
                     />
@@ -131,7 +136,7 @@ android:background="@color/layout_bg">
                 <EditText
                     android:id="@+id/tv_product_serial"
                     style="@style/materialEditTextStyle"
-                    android:layout_width="150dp"
+                    android:layout_width="250dp"
                     android:hint="请输入产品批号"
                     android:layout_alignParentRight="true"
 
@@ -156,10 +161,11 @@ android:background="@color/layout_bg">
                 <EditText
                     android:id="@+id/tv_goods_num"
                     style="@style/materialEditTextStyle"
-                    android:layout_width="150dp"
+                    android:layout_width="250dp"
                     android:hint="请输入货位编号"
+                    android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
-                    />
+                    android:layout_alignParentEnd="true" />
             </RelativeLayout>
             <LinearLayout
                 style="@style/newSheetLineStyle"
@@ -181,10 +187,9 @@ android:background="@color/layout_bg">
                 <EditText
                     android:id="@+id/tv_num"
                     style="@style/materialEditTextStyle"
-                    android:layout_width="150dp"
+                    android:layout_width="250dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
-                    android:numeric="integer"
                     android:hint="请输入出库数量"
                     android:layout_toLeftOf="@+id/tv_box"
                     />
@@ -216,14 +221,16 @@ android:background="@color/layout_bg">
                     android:background="@drawable/rectangle_construction_report_unagree"
                     android:gravity="center"
                     android:text="完成发货单"
+                    android:visibility="gone"
                     android:textColor="@color/colorPrima"
                     android:textSize="17sp"/>
 
                 <Button
                     android:id="@+id/btn_confirm"
-                    android:layout_width="150dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="40dp"
                     android:layout_height="41dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="40dp"
                     android:background="@drawable/rectangle_construction_report_agree"
                     android:gravity="center"
                     android:text="提交"
@@ -259,4 +266,6 @@ android:background="@color/layout_bg">
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
+</LinearLayout>
+    <include layout="@layout/bottom_bar"/>
 </LinearLayout>

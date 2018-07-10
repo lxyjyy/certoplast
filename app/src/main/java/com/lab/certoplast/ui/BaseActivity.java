@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 
 import com.lab.certoplast.api.ApiClient;
 import com.lab.certoplast.app.AppContext;
@@ -55,6 +56,34 @@ public abstract class BaseActivity extends Activity {
     public int getRecord() {
 
         return record.size();
+    }
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 1:
+                    if (!BaseActivity.this.isFinishing())
+                        finish();
+
+                    break;
+            }
+        }
+    };
+
+
+    public void postDelayed(final EditText editText) {
+        editText.postDelayed(new Runnable() {//给他个延迟时间
+            @Override
+            public void run() {
+                editText.requestFocus();
+            }
+        }, 500);
+    }
+
+    public void sendErrorClose(){
+        handler.sendEmptyMessageDelayed(1,2000);
     }
 
     @Override
@@ -165,19 +194,15 @@ public abstract class BaseActivity extends Activity {
             closeProgress();
             if (msg.what == Constant.SUCCESS) {
                 // 请求成功并且obj!=null
-                callBack.processData(msg.obj, true);
+                if(!BaseActivity.this.isFinishing()){
+                    callBack.processData(msg.obj, true);
+                }
 
             } else if (msg.what == Constant.APP_Exception) {
                 callBack.onFailure((AppException) msg.obj);
             } else if (msg.what == Constant.ERROR) {
                 callBack.onError((ErrorMessage) msg.obj);
             } else if (msg.what == Constant.LOGOUT) {
-                // 登陆过期
-                // finish 所有的activity ,然后跳转到登陆界面
-//				AppManager.getAppManager().finishAllActivity();
-//				startActivity(new Intent(BaseActivity.this, LoginActivity.class));
-//				UiCommon.INSTANCE.showTip("登陆过期，请重新登陆!");
-
             }
         }
     }

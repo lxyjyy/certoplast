@@ -47,7 +47,6 @@ public class ShowWareHouseAdapter extends BaseContentAdapter<WareHouse> {
 			iv_select.setBackgroundResource(R.mipmap.button_uncheck);
 		}
 
-
 		tv_title.setText(area.getWareHouse_Set());
 
 		return convertView;

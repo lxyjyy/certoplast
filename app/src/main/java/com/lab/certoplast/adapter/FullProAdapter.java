@@ -53,9 +53,6 @@ public class FullProAdapter extends RecyclerView.Adapter {
 
             FullPro dataSource = list.get(position);
 
-            holder1.tv_product.setText("产品: " + dataSource.getProduct_ID());
-            holder1.tv_unit.setText("库单位: " + dataSource.getFroms());
-            holder1.tv_operation.setText("操作工: " + dataSource.getUser_name());
 
 
             holder1.itemView.setOnClickListener(new View.OnClickListener() {

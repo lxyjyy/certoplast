@@ -10,6 +10,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.lab.certoplast.R;
+import com.lab.certoplast.app.AppManager;
+import com.lab.certoplast.bean.User;
 import com.lab.certoplast.utils.UiCommon;
 
 import butterknife.BindView;
@@ -34,11 +36,25 @@ public class ShippingActivity extends BaseActivity {
     @BindView(R.id.et_search)
     EditText et_search;
 
+    @BindView(R.id.tv_main)
+    TextView tv_main;
+    @BindView(R.id.tv_username)
+    TextView tv_username;
+    @BindView(R.id.tv_logout)
+    TextView tv_logout;
+
     @Override
     protected View initView() {
         return LayoutInflater.from(this).inflate(R.layout.activity_shipping, null, false);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        et_search.setText("");
+        et_search.requestFocus();
+    }
 
     @Override
     protected void initData() {
@@ -47,9 +63,26 @@ public class ShippingActivity extends BaseActivity {
 
         btn_left_white.setVisibility(View.VISIBLE);
 
+        postDelayed(et_search);
+
+        User user = appContext.getLoginInfo();
+        tv_username.setText(user.getUser_Name());
+
+
+        et_search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String search = et_search.getText().toString().trim();
+                if (!hasFocus && !TextUtils.isEmpty(search)){
+                    //提交
+                    search();
+                }
+            }
+        });
+
     }
 
-    @OnClick({R.id.btn_left_white, R.id.btn_search})
+    @OnClick({R.id.btn_left_white, R.id.btn_search, R.id.tv_logout, R.id.tv_main})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.btn_left_white:
@@ -58,6 +91,16 @@ public class ShippingActivity extends BaseActivity {
             case R.id.btn_search:
                 search();
 
+                break;
+
+            case R.id.tv_logout:
+                appContext.cleanLoginInfo();
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(this, LoginActivity.class, null);
+                break;
+            case R.id.tv_main:
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(this, MainActivity.class, null);
                 break;
         }
     }
@@ -78,4 +121,6 @@ public class ShippingActivity extends BaseActivity {
 
 
     }
+
+
 }

@@ -6,7 +6,10 @@
     android:background="@color/layout_bg">
 
     <include layout="@layout/top_bar"/>
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_weight="1.0"
+    android:layout_height="match_parent">
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/sv"
         android:layout_width="match_parent"
@@ -23,9 +26,32 @@
       android:background="@color/layout_bg"
       android:orientation="vertical">
 
+      <TextView
+          android:id="@+id/tv_h1"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_marginTop="15dp"
+
+          android:textSize="25sp"
+          android:textColor="@color/login_bg"
+          android:text="采购收货管理"/>
+
+
+      <TextView
+          android:id="@+id/tv_h2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_marginTop="15dp"
+          android:textSize="20sp"
+          android:textColor="@color/login_bg"
+          android:text="入库货位代码:"/>
+
+
 
       <RelativeLayout
-          android:layout_marginTop="30dp"
+          android:layout_marginTop="10dp"
           android:layout_width="match_parent"
           android:layout_height="match_parent">
           <EditText
@@ -40,7 +66,10 @@
               android:layout_marginLeft="40dp"
               android:layout_marginRight="40dp"
               android:textColorHint="@color/a_c"
-              android:background="@null"/>
+              android:background="@null">
+              <requestFocus/>
+              </EditText>
+
 
           <View
               android:id="@+id/view"
@@ -91,7 +120,7 @@
               android:layout_height="@dimen/login_btn_width"
               android:background="@android:color/white"
               android:textColor="@color/login_bg"
-              android:layout_below="@+id/et_select"
+              android:layout_below="@+id/et_search"
               android:layout_marginTop="@dimen/margin_top"
               android:layout_centerHorizontal="true"
               android:visibility="gone"
@@ -251,8 +280,6 @@
       </LinearLayout>
 
 
-
-
   </LinearLayout>
 
 
@@ -266,4 +293,6 @@
         android:visibility="gone"/>
         </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
+</LinearLayout>
+    <include layout="@layout/bottom_bar"/>
 </LinearLayout>

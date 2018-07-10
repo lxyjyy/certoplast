@@ -1,37 +1,36 @@
 package com.lab.certoplast.parser;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.lab.certoplast.bean.FullPro;
-import com.lab.certoplast.utils.StringUtils;
+import com.lab.certoplast.bean.Response;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lxyjyy on 17/11/12.
  * 成品入库
  */
 
-public class FullProParser extends BaseParser<List<FullPro>> {
+public class FullProParser extends BaseParser<Response> {
 
     @Override
-    public List<FullPro> parse(String paramString) throws IOException, XmlPullParserException {
+    public Response parse(String paramString) throws JsonParseException{
 
         if (paramString != null)
         {
-            String result = StringUtils.xmlParser(paramString);
-            Type founderListType = new TypeToken<ArrayList<FullPro>>(){}.getType();
 
-            List<FullPro> list = new Gson().fromJson(result, founderListType);
+            int id = paramString.indexOf("{");
 
-            if (list.size() > 0){
-                return list;
+            if (id > 0){
+                paramString = paramString.substring(id);
             }
+            Type founderListType = new TypeToken<Response<FullPro>>(){}.getType();
+
+            Response response = new Gson().fromJson(paramString, founderListType);
+
+            return response;
         }
 
         return null;

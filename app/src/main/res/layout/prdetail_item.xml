@@ -31,7 +31,6 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            android:paddingBottom="20dp"
             android:text="需求"/>
 
 
@@ -42,7 +41,6 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            android:paddingBottom="20dp"
             android:text="批号"/>
 
 
@@ -55,7 +53,6 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            android:paddingBottom="20dp"
             android:text="实出"/>
 
         <TextView

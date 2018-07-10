@@ -1,66 +1,70 @@
 package com.lab.certoplast.bean;
 
-import com.google.gson.annotations.SerializedName;
+import com.bin.david.form.annotation.SmartColumn;
+import com.bin.david.form.annotation.SmartTable;
 
 /**
  * Created by lxyjyy on 17/11/15.
  *
- * 盘点实体
- *
- *
- * "ID":15771,"WareHouse_ID":2,
- * "WareHouse_Set":"FA244",
- * "Product_ID":"52502525",
- * "shuliang":1512,"Product_PID":"17/09354/22",
- * "ruku_ID":"RK-CP161718","caigou_ID":"","scjh_ID":"",
- * "status":4,"SSMA_TimeStamp":[0,0,0,0,0,1,55,141],
- * "Class":"成品库","Name":"布基胶带",
- * "GuiGe":"25mm*25m/H38/BLACK","Froms":"卷"}
+ * 盘点实体{"response":"success","info":"success",
+ * "msg":[{"warehouse":"成品库","wareHouse_set":"FE131","product_id":"52502525","amount":"6[4]"},
+ * {"warehouse":"成品库","wareHouse_set":"FI003","product_id":"52502525","amount":"14"},
+ * {"warehouse":"成品库","wareHouse_set":"FD102B","product_id":"52502525","amount":"16"},
+ * {"warehouse":"成品库","wareHouse_set":"FQ011","product_id":"52502525","amount":"16"}]
+ * }
+
  */
-
+@SmartTable(name="库存列表")
 public class Inventory extends Base {
+    @SmartColumn(id =1,name = "库房")
+    private String warehouse;
+    @SmartColumn(id =2,name = "货位ID")
+    private String wareHouse_set;
+    private String product_id;
+    @SmartColumn(id =3,name = "数量")
+    private String amount;
 
-    //库房类型
-    @SerializedName("Class")
-    private String type;
-    //货位ID
-    private String WareHouse_Set;
-    //数量
-    private String shuliang;
-
-    //产品批号
-    private String Product_PID;
+    @SmartColumn(id =3,name = "产品批号")
+    private String product_pid;
 
 
-    public String getType() {
-        return type;
+    public String getProduct_pid() {
+        return product_pid;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setProduct_pid(String product_pid) {
+        this.product_pid = product_pid;
     }
 
-    public String getWareHouse_Set() {
-        return WareHouse_Set;
+    public String getWarehouse() {
+        return warehouse;
     }
 
-    public void setWareHouse_Set(String wareHouse_Set) {
-        WareHouse_Set = wareHouse_Set;
+    public void setWarehouse(String warehouse) {
+        this.warehouse = warehouse;
     }
 
-    public String getShuliang() {
-        return shuliang;
+    public String getWareHouse_set() {
+        return wareHouse_set;
     }
 
-    public void setShuliang(String shuliang) {
-        this.shuliang = shuliang;
+    public void setWareHouse_set(String wareHouse_set) {
+        this.wareHouse_set = wareHouse_set;
     }
 
-    public String getProduct_PID() {
-        return Product_PID;
+    public String getProduct_id() {
+        return product_id;
     }
 
-    public void setProduct_PID(String product_PID) {
-        Product_PID = product_PID;
+    public void setProduct_id(String product_id) {
+        this.product_id = product_id;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
     }
 }

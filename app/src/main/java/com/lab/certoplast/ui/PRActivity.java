@@ -11,24 +11,28 @@ import android.widget.TextView;
 import com.lab.certoplast.R;
 import com.lab.certoplast.adapter.ProductionOfRecipientsAdapter;
 import com.lab.certoplast.app.AppException;
+import com.lab.certoplast.app.AppManager;
 import com.lab.certoplast.bean.DataCallback;
 import com.lab.certoplast.bean.ErrorMessage;
 import com.lab.certoplast.bean.OnItemClickListener;
 import com.lab.certoplast.bean.ProductionOfRecipients;
 import com.lab.certoplast.bean.RequestVo;
+import com.lab.certoplast.bean.Response;
 import com.lab.certoplast.bean.SpaceItemDecoration;
+import com.lab.certoplast.bean.User;
 import com.lab.certoplast.parser.ProductionOfRecipientsParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  *  生产领用列表
  */
 
-public class ProductionOfRecipientsActivity extends BaseActivity implements OnItemClickListener{
+public class PRActivity extends BaseActivity implements OnItemClickListener{
 
 
     @BindView(R.id.btn_left_white)
@@ -42,6 +46,16 @@ public class ProductionOfRecipientsActivity extends BaseActivity implements OnIt
     View searching;
     @BindView(R.id.show_empty)
     View show_empty;
+
+    @BindView(R.id.tv_content)
+    TextView tv_content;
+    @BindView(R.id.tv_main)
+    TextView tv_main;
+    @BindView(R.id.tv_username)
+    TextView tv_username;
+    @BindView(R.id.tv_logout)
+    TextView tv_logout;
+
 
     private List<ProductionOfRecipients> list;
 
@@ -62,14 +76,20 @@ public class ProductionOfRecipientsActivity extends BaseActivity implements OnIt
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
+    @OnClick({ R.id.tv_logout, R.id.tv_main})
+    public void onClick(View view) {
 
-
-    public void updateData(){
-
+        switch (view.getId()) {
+            case R.id.tv_logout:
+                appContext.cleanLoginInfo();
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(PRActivity.this, LoginActivity.class, null);
+                break;
+            case R.id.tv_main:
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(PRActivity.this, MainActivity.class, null);
+                break;
+        }
     }
 
     private void initShowing(){
@@ -77,21 +97,23 @@ public class ProductionOfRecipientsActivity extends BaseActivity implements OnIt
         showing();
         RequestVo vo  = new RequestVo();
 
-        vo.methodName = "GetScjh_Yl";
+        vo.methodName = "ProductionOfRecipients.asp";
         vo.jsonParser = new ProductionOfRecipientsParser();
 
-        doPost(vo, new DataCallback() {
+        doGet(vo, new DataCallback() {
             @Override
             public void processData(Object paramObject, boolean paramBoolean) {
                 if (paramObject == null){
                     emptyShowing();
                 }else {
 
-                    List<ProductionOfRecipients> list1 = (List<ProductionOfRecipients>) paramObject;
+                    Response response = (Response)paramObject;
 
-                    if (list1.size() <= 0){
-                        emptyShowing();
+                    if ("error".equals(response.getResponse())){
+                        emptyShowing(response.getInfo());
                     }else {
+                        List<ProductionOfRecipients> list1 = (List<ProductionOfRecipients>) response.getMsg();
+
                         hide();
                         list.clear();
                         list.addAll(list1);
@@ -103,12 +125,12 @@ public class ProductionOfRecipientsActivity extends BaseActivity implements OnIt
 
             @Override
             public void onFailure(AppException e) {
-                emptyShowing();
+                emptyShowing(e.getErrorMsg());
             }
 
             @Override
             public void onError(ErrorMessage error) {
-                emptyShowing();
+                emptyShowing(error.getText());
             }
         });
     }
@@ -120,6 +142,9 @@ public class ProductionOfRecipientsActivity extends BaseActivity implements OnIt
         recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
 
         tv_title.setText("生产领用");
+
+        User user = appContext.getLoginInfo();
+        tv_username.setText(user.getUser_Name());
 
         btn_left_white.setVisibility(View.VISIBLE);
         btn_left_white.setOnClickListener(new View.OnClickListener() {
@@ -142,11 +167,10 @@ public class ProductionOfRecipientsActivity extends BaseActivity implements OnIt
         ProductionOfRecipients pr = list.get(position);
 
         Bundle bundle = new Bundle();
-        bundle.putString("sy_id", pr.getTime());
-        bundle.putString("product_id", pr.getProduct_id());
+        bundle.putString("sy_id", pr.getSingleno());
 
 
-        redictToActivity(this, ProductionOfRecipientsDetailActivity.class, bundle);
+        redictToActivity(this, PRDetailActivity.class, bundle);
 
     }
 
@@ -163,6 +187,12 @@ public class ProductionOfRecipientsActivity extends BaseActivity implements OnIt
     private void emptyShowing(){
         recyclerView.setVisibility(View.GONE);
         show_empty.setVisibility(View.VISIBLE);
+    }
+
+    private void emptyShowing(String text){
+        recyclerView.setVisibility(View.GONE);
+        show_empty.setVisibility(View.VISIBLE);
+        tv_content.setText(text);
     }
 
 

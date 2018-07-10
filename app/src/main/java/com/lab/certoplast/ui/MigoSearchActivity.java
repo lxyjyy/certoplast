@@ -10,9 +10,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.lab.certoplast.R;
+import com.lab.certoplast.app.AppManager;
+import com.lab.certoplast.bean.User;
 import com.lab.certoplast.utils.UiCommon;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by lxyjyy on 17/11/8.
@@ -34,17 +37,37 @@ public class MigoSearchActivity extends BaseActivity {
     @BindView(R.id.btn_search)
     Button btn_search;
 
+    @BindView(R.id.tv_main)
+    TextView tv_main;
+    @BindView(R.id.tv_username)
+    TextView tv_username;
+    @BindView(R.id.tv_logout)
+    TextView tv_logout;
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        et_search.setText("");
+        et_search.requestFocus();
+    }
 
     /**
      * 初始化
      */
     protected View initView(){
-        return LayoutInflater.from(this).inflate(R.layout.activity_cgshsearch, null, false);
+        return LayoutInflater.from(this).inflate(R.layout.activity_migosearch, null, false);
     }
 
     protected void initData(){
 
         btn_left_white.setVisibility(View.VISIBLE);
+
+
+        User user = appContext.getLoginInfo();
+        tv_username.setText(user.getUser_Name());
+
 
         tv_title.setText("入库查询");
         tv_confirm.setText("原料退货");
@@ -61,16 +84,52 @@ public class MigoSearchActivity extends BaseActivity {
         btn_search.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                String search = et_search.getText().toString().trim();
-                if (TextUtils.isEmpty(search)){
-                    UiCommon.INSTANCE.showTip("请输入采购入库单号!");
-                    return;
-                }
-
-                Bundle bundle = new Bundle();
-                bundle.putString("ruku_id", search);
-                redictToActivity(MigoSearchActivity.this, MigoSearchListActivity.class, bundle);
+               jumpToSearch1();
             }
         });
+
+        postDelayed(et_search);
+
+        et_search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String search = et_search.getText().toString().trim();
+                if (!hasFocus && !TextUtils.isEmpty(search)){
+                    //提交
+                    jumpToSearch1();
+                }
+            }
+        });
+
+
+    }
+
+
+    private void jumpToSearch1(){
+        String search = et_search.getText().toString().trim();
+        if (TextUtils.isEmpty(search)){
+            UiCommon.INSTANCE.showTip("请输入采购入库单号!");
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("ruku_id", search);
+        redictToActivity(MigoSearchActivity.this, MigoSearch1Activity.class, bundle);
+    }
+
+    @OnClick({R.id.tv_logout, R.id.tv_main})
+    public void onClick(View v){
+        switch (v.getId()){
+
+            case R.id.tv_logout:
+                appContext.cleanLoginInfo();
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(MigoSearchActivity.this, LoginActivity.class, null);
+                break;
+            case R.id.tv_main:
+                finish();
+                break;
+        }
+
     }
 }

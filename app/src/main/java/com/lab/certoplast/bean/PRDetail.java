@@ -18,6 +18,15 @@ public class PRDetail extends Base {
     private String status;
     private String product_pid;
     private String Froms;
+    private String sl;
+
+    public String getSl() {
+        return sl;
+    }
+
+    public void setSl(String sl) {
+        this.sl = sl;
+    }
 
     public String getID() {
         return ID;

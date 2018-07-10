@@ -1,10 +1,8 @@
 package com.lab.certoplast.parser;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
+import com.google.gson.JsonParseException;
 
 public abstract class BaseParser<T> {
 
-	public abstract T parse(String paramString) throws IOException, XmlPullParserException;
+	public abstract T parse(String paramString) throws JsonParseException;
 }

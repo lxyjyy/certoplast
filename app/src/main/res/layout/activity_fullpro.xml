@@ -6,8 +6,14 @@
     android:background="@color/layout_bg">
 
     <include layout="@layout/top_bar"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1.0"
+    android:orientation="vertical">
 
-    <ScrollView
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -22,9 +28,26 @@
                 android:background="@color/layout_bg"
                 android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="25sp"
+                    android:textColor="@color/login_bg"
+                    android:text="成品入库系统"/>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="20sp"
+                    android:textColor="@color/login_bg"
+                    android:text="待入库成品批号:"/>
                 <RelativeLayout
-                    android:layout_marginTop="30dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <EditText
@@ -69,10 +92,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white"
                     android:layout_marginTop="30dp"
                     android:orientation="vertical">
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cacheColorHint="@null"
 
+                        android:scrollbars="vertical">
+
+                    </android.support.v7.widget.RecyclerView>
 
                 </LinearLayout>
 
@@ -88,5 +118,8 @@
                 android:id="@+id/searching"
                 android:visibility="gone"/>
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>
+    <include layout="@layout/bottom_bar"/>
 </LinearLayout>

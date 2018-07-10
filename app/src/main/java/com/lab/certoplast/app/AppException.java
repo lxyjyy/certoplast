@@ -34,12 +34,12 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
 	}
 
 	public enum TaskError {
-		// 无网络链接
-		noneNetwork,
-		// 连接超时
-		timeout,
-		// 返回数据不合法
-		resultIllegal
+		REQUEST_ERROR,//请求服务器失败
+		PARSE_EXCEPTION,//解析服务器数据异常
+		CONNECT_EXCEPTION,//连接服务器异常
+		TIMEOUT,//连接服务器超时
+		UNKNOWNHOST_EXCEPTION,//未知的主机异常
+		IOEXCEPTION         //读写数据异常
 	}
 
 	private String errorCode;
@@ -57,15 +57,24 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
 
 		try {
 			TaskError error = TaskError.valueOf(errorCode);
-			if (TaskError.noneNetwork == error)
+			if (TaskError.REQUEST_ERROR == error)
 				errorMsg = AppContext.getInstance().getResources()
-						.getString(R.string.noneNetwork);
-			else if (TaskError.timeout == error)
+						.getString(R.string.request_error);
+			else if (TaskError.PARSE_EXCEPTION == error)
+				errorMsg = AppContext.getInstance().getResources()
+						.getString(R.string.parse_exception);
+			else if (TaskError.CONNECT_EXCEPTION == error)
+				errorMsg = AppContext.getInstance().getResources()
+						.getString(R.string.connect_exception);
+			else if (TaskError.TIMEOUT == error)
 				errorMsg = AppContext.getInstance().getResources()
 						.getString(R.string.timeout);
-			else if (TaskError.resultIllegal == error)
+			else if (TaskError.UNKNOWNHOST_EXCEPTION == error)
 				errorMsg = AppContext.getInstance().getResources()
-						.getString(R.string.resultIllegal);
+						.getString(R.string.unknownhost_exception);
+			else if (TaskError.IOEXCEPTION == error)
+				errorMsg = AppContext.getInstance().getResources()
+						.getString(R.string.ioexception);
 		} catch (Exception e) {
 		}
 	}

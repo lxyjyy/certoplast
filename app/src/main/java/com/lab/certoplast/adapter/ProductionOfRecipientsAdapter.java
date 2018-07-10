@@ -56,8 +56,8 @@ public class ProductionOfRecipientsAdapter extends RecyclerView.Adapter {
 
             ProductionOfRecipients dataSource = list.get(position);
 
-            holder1.warehousing_no.setText("领用单号: " + dataSource.getTime());
-            holder1.purchase_no.setText("  计划号: " + dataSource.getProduct_id());
+            holder1.warehousing_no.setText("领用单号: " + dataSource.getSingleno());
+            holder1.purchase_no.setText(" 计划号: " + dataSource.getProduct_id());
 
 
             holder1.itemView.setOnClickListener(new View.OnClickListener() {

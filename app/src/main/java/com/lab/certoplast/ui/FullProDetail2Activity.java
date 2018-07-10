@@ -11,23 +11,24 @@ import android.widget.TextView;
 
 import com.lab.certoplast.R;
 import com.lab.certoplast.app.AppException;
+import com.lab.certoplast.app.AppManager;
 import com.lab.certoplast.bean.DataCallback;
 import com.lab.certoplast.bean.ErrorMessage;
-import com.lab.certoplast.bean.ProductSearch;
+import com.lab.certoplast.bean.FullProDetail2;
 import com.lab.certoplast.bean.RequestVo;
-import com.lab.certoplast.bean.ResponseResult;
-import com.lab.certoplast.bean.WareHouse;
-import com.lab.certoplast.parser.ProductSearchParser;
-import com.lab.certoplast.parser.ResponseParser;
-import com.lab.certoplast.parser.WareHouseListParser;
+import com.lab.certoplast.bean.Response;
+import com.lab.certoplast.bean.User;
+import com.lab.certoplast.parser.FullProDetail2ListParser;
+import com.lab.certoplast.parser.LoginParser;
 import com.lab.certoplast.utils.StringUtils;
 import com.lab.certoplast.utils.UiCommon;
 
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.lab.certoplast.R.id.leave;
 
 /**
  * Created by lxyjyy on 17/12/10.
@@ -61,8 +62,11 @@ public class FullProDetail2Activity extends BaseActivity {
     @BindView(R.id.tv_status)
     TextView tv_status;
 
+    @BindView(R.id.tv_content)
+    TextView tv_content;
+
     //剩余数量
-    @BindView(R.id.leave)
+    @BindView(leave)
     TextView tv_leave;
 
     @BindView(R.id.et_search)
@@ -79,6 +83,16 @@ public class FullProDetail2Activity extends BaseActivity {
     private String sl_real_box;
     private String real_box;
 
+
+    @BindView(R.id.tv_main)
+    TextView tv_main;
+    @BindView(R.id.tv_username)
+    TextView tv_username;
+    @BindView(R.id.tv_logout)
+    TextView tv_logout;
+
+    @BindView(R.id.tv_in)
+    TextView tv_in;
 
     @Override
     protected View initView() {
@@ -109,6 +123,9 @@ public class FullProDetail2Activity extends BaseActivity {
 
         tv_title.setText("成品入库");
 
+        User user = appContext.getLoginInfo();
+        tv_username.setText(user.getUser_Name());
+
     }
 
     /**
@@ -128,13 +145,20 @@ public class FullProDetail2Activity extends BaseActivity {
         showing();
 
         HashMap<String, String> map = new HashMap<>();
-        map.put("WareHouse_Set", warehost);
+        map.put("warehost", warehost);
+        map.put("sl_real_box", sl_real_box);
+        map.put("real_box", real_box);
+        map.put("poid", p_id);
+        map.put("ppid", ppid);
+        map.put("scjhid", cprk_scjh);
+        map.put("rukuid", rukuid);
+        map.put("juanrk", juanrk);
 
         RequestVo vo = new RequestVo();
-        vo.methodName = "GetWareHoust_Set";
+        vo.methodName = "FullProDetail2.asp";
         vo.requestDataMap = map;
 
-        vo.jsonParser = new WareHouseListParser();
+        vo.jsonParser = new FullProDetail2ListParser();
 
         doPost(vo, new DataCallback() {
             @Override
@@ -142,12 +166,16 @@ public class FullProDetail2Activity extends BaseActivity {
                 if (paramObject == null){
                     emptyShowing();
                 }else {
-                    List<WareHouse> list = (List<WareHouse>) paramObject;
 
-                    if (list.size() <= 0){
-                        emptyShowing();
-                    }else {
-                        setShow(list);
+                    Response response = (Response) paramObject;
+                    FullProDetail2 detail2 = (FullProDetail2) response.getMsg();
+
+                    if ("error".equals(response.getResponse())){
+                        emptyShowing(response.getInfo());
+                        sendErrorClose();
+                    }else{
+                        hide();
+                        setShow(detail2);
                     }
                 }
             }
@@ -165,96 +193,38 @@ public class FullProDetail2Activity extends BaseActivity {
     }
 
 
-    private void setShow(List<WareHouse> list){
-        int flag = 0;
-        final WareHouse wareHouse = list.get(0);
-        int size = list.size();
+    private void setShow(FullProDetail2 fullProDetail2){
 
-        if ("".equals(wareHouse.getProduct_ID()) && "".equals(wareHouse.getProduct_PID())){
-            flag = 1;
+            tv_warehost_no.setText("货位:" + fullProDetail2.getWarehost());
+            tv_leave.setText(fullProDetail2.getRemain());
+            tv_status.setText("目前状态:" + fullProDetail2.getState());
+            tv_in.setText(fullProDetail2.getAmount());
+            et_search.setHint(fullProDetail2.getAmount());
 
-        }
+    }
 
-        if ("0".equals(wareHouse.getProduct_ID()) && "0".equals(wareHouse.getProduct_PID())){
-            flag = 1;
+    @OnClick({R.id.btn_search, R.id.tv_logout, R.id.tv_main})
+    public void onClick(View view){
 
-        }
-
-        if (p_id.equals(wareHouse.getProduct_ID()) && ppid.equals(wareHouse.getProduct_PID())){
-            flag = 1;
-        }
-
-        if (flag == 0){
-            emptyShowing();
-            UiCommon.INSTANCE.showTip("货位已有其他批次的产品，不能混放！");
-        }else {
-            tv_warehost_no.setText("货位:" + warehost);
-
-            int leave = StringUtils.toInt(real_box) - StringUtils.toInt(sl_real_box);
-            tv_leave.setText("还有" + leave + juanrk + "产品需要入库!");
-            final String amount = wareHouse.getShuliang();
-            if ("卷".equals(juanrk)){
-                if ("0".equals(wareHouse.getProduct_ID()) && "0".equals(wareHouse.getProduct_PID())){
-                    tv_status.setText("目前状态:空");
-
-                }else {
-                    tv_status.setText("已有产品:"+wareHouse.getProduct_ID()+
-                            "," + "已有批号;" + wareHouse.getProduct_PID() + ",已有数量:" + amount + juanrk);
-                }
-            }else {
-                HashMap<String, String> map = new HashMap<>();
-                map.put("product_id", p_id);
-
-                RequestVo vo = new RequestVo();
-                vo.methodName = "GetProductSearch";
-                vo.requestDataMap = map;
-
-                vo.jsonParser = new ProductSearchParser();
-
-                doPost(vo, new DataCallback() {
-                    @Override
-                    public void processData(Object paramObject, boolean paramBoolean) {
-                        if (paramObject == null){
-                            emptyShowing();
-                        }else {
-
-                            hide();
-                            ProductSearch productSearch = (ProductSearch) paramObject;
-                            int show = 0;
-                            if ("3".equals(productSearch.getType()) || "10".equals(productSearch.getType())){
-                                show = StringUtils.toInt(amount)/StringUtils.toInt(productSearch.getBaozhuang_bili());
-                            }
-                            if ("0".equals(wareHouse.getProduct_ID()) && "0".equals(wareHouse.getProduct_PID())){
-                                tv_status.setText("目前状态:空");
-
-                            }else {
-                                tv_status.setText("已有产品:"+wareHouse.getProduct_ID() +
-                                "," + "已有批号;" + wareHouse.getProduct_PID() + ",已有数量:" + show + juanrk);
-                            }
-
-
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(AppException e) {
-                        emptyShowing();
-                    }
-
-                    @Override
-                    public void onError(ErrorMessage error) {
-                        emptyShowing();
-                    }
-                });
-            }
-
+        switch (view.getId()){
+            case R.id.btn_search:
+                search();
+                break;
+            case R.id.tv_logout:
+                appContext.cleanLoginInfo();
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(this, LoginActivity.class, null);
+                break;
+            case R.id.tv_main:
+                AppManager.getAppManager().finishAllActivity();
+                redictToActivity(this, MainActivity.class, null);
+                break;
         }
 
     }
 
-    @OnClick(R.id.btn_search)
-    public void onClick(View view){
-         String box = et_search.getText().toString().trim();
+    private void search(){
+        String box = et_search.getText().toString().trim();
 
         if (TextUtils.isEmpty(box)){
             UiCommon.INSTANCE.showTip("入库箱数不能为空!");
@@ -276,21 +246,22 @@ public class FullProDetail2Activity extends BaseActivity {
         map.put("warehost", warehost);
         map.put("sl_real_box", sl_real_box);
         map.put("poid", p_id);
+        map.put("ppid", ppid);
+        map.put("real_box", real_box);
         map.put("scjhid", cprk_scjh);
         map.put("slbox", box);
         map.put("rukuid", rukuid);
         map.put("juanrk", juanrk);
         map.put("username", appContext.getLoginInfo().getUser_Name());
 
-        String url = "http://" + appContext.ipPort() + "/cprksm4.asp";
 
-        vo.requestUrl = url;
+        vo.methodName = "FullProBoxIn.asp";
         vo.requestDataMap = map;
         vo.isShowDialog = true;
-        vo.jsonParser = new ResponseParser();
+        vo.jsonParser = new LoginParser();
         vo.Message = "正在提交...";
 
-        doGet(vo, new DataCallback() {
+        doPost(vo, new DataCallback() {
             @Override
             public void processData(Object paramObject, boolean paramBoolean) {
                 closeProgress();
@@ -298,13 +269,13 @@ public class FullProDetail2Activity extends BaseActivity {
                 if (paramObject == null){
                     UiCommon.INSTANCE.showTip("提交失败");
                 }else {
-                    ResponseResult result = (ResponseResult) paramObject;
+                    Response result = (Response) paramObject;
 
-                    if (result.getResponse().contains("成功")){
-                        UiCommon.INSTANCE.showTip("");
-
+                    if ("error".equals(result.getResponse())){
+                        UiCommon.INSTANCE.showTip(result.getInfo());
                     }else {
-                        UiCommon.INSTANCE.showTip(result.getResponse());
+                        UiCommon.INSTANCE.showTip("提交成功!");
+                        finish();
                     }
                 }
             }
@@ -321,19 +292,19 @@ public class FullProDetail2Activity extends BaseActivity {
                 closeProgress();
             }
         });
-
-
     }
 
 
     private void showing(){
         searching.setVisibility(View.VISIBLE);
         layout1.setVisibility(View.GONE);
+        show_empty.setVisibility(View.GONE);
     }
 
     private void hide(){
         searching.setVisibility(View.GONE);
         layout1.setVisibility(View.VISIBLE);
+        show_empty.setVisibility(View.GONE);
     }
 
     private void emptyShowing(){
@@ -341,4 +312,12 @@ public class FullProDetail2Activity extends BaseActivity {
         searching.setVisibility(View.GONE);
         layout1.setVisibility(View.GONE);
     }
+
+    private void emptyShowing(String text){
+        show_empty.setVisibility(View.VISIBLE);
+        searching.setVisibility(View.GONE);
+        layout1.setVisibility(View.GONE);
+        tv_content.setText(text);
+    }
+
 }
